@@ -8,7 +8,6 @@ public class YoureFiredEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
-		bOverrideBuildEnvironment = true;
 		ExtraModuleNames.Add("YoureFired");
 	}
 }
