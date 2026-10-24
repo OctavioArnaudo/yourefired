@@ -4,10 +4,10 @@
 
 import unreal
 
-LEVEL_PATH = "/Game/Generated/Lvl_Victory"
+LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Victory"
 
 def build_victory_level():
-    unreal.EditorAssetLibrary.make_directory("/Game/Generated")
+    unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
     unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
 
     # Spawn Victory Podium / Stage
@@ -22,4 +22,5 @@ def build_victory_level():
     unreal.EditorLevelLibrary.save_current_level()
     unreal.log("[VictoryLevelView] Lvl_Victory creado correctamente.")
 
-build_victory_level()
+if __name__ == "__main__":
+    build_victory_level()

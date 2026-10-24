@@ -4,7 +4,7 @@
 
 import unreal
 
-LEVEL_PATH = "/Game/Generated/Lvl_Pilot"
+LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Pilot"
 
 CUBE_PATH = "/Engine/BasicShapes/Cube.Cube"
 SPHERE_PATH = "/Engine/BasicShapes/Sphere.Sphere"
@@ -47,7 +47,7 @@ def spawn_actor(name, class_path, fallback_mesh, position, scale=(1, 1, 1)):
 def build_pilot_level():
     log("Construyendo Lvl_Pilot (Pilot Level Gameplay Scene)...")
 
-    unreal.EditorAssetLibrary.make_directory("/Game/Generated")
+    unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
     created = unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
     if not created:
         log("No se pudo crear Lvl_Pilot.")

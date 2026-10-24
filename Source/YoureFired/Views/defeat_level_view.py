@@ -4,10 +4,10 @@
 
 import unreal
 
-LEVEL_PATH = "/Game/Generated/Lvl_Defeat"
+LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Defeat"
 
 def build_defeat_level():
-    unreal.EditorAssetLibrary.make_directory("/Game/Generated")
+    unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
     unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
 
     # Spawn Pink Slip / Carta de Despido visual prop
@@ -22,4 +22,5 @@ def build_defeat_level():
     unreal.EditorLevelLibrary.save_current_level()
     unreal.log("[DefeatLevelView] Lvl_Defeat (You're Fired) creado correctamente.")
 
-build_defeat_level()
+if __name__ == "__main__":
+    build_defeat_level()
