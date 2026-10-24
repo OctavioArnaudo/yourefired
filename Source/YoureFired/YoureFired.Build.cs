@@ -1,4 +1,5 @@
 using UnrealBuildTool;
+using System.IO;
 
 public class YoureFired : ModuleRules
 {
@@ -17,5 +18,12 @@ public class YoureFired : ModuleRules
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
+
+		PublicIncludePaths.AddRange(new string[] {
+			ModuleDirectory,
+			Path.Combine(ModuleDirectory, "Enemies"),
+			Path.Combine(ModuleDirectory, "Environment"),
+			Path.Combine(ModuleDirectory, "Items")
+		});
 	}
 }

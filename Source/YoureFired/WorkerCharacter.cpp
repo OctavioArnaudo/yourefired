@@ -30,7 +30,7 @@ AWorkerCharacter::AWorkerCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 640.0f, 0.0f);
 	GetCharacterMovement()->bConstrainToPlane = true;
-	GetCharacterMovement()->bSnapToPlaneByDistance = true;
+	GetCharacterMovement()->SetPlaneConstraintNormal(FVector(0.0f, 0.0f, 1.0f));
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
