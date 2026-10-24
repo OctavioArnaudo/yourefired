@@ -1,5 +1,6 @@
 import unreal
-from Builders import s_level, c_environment
+import s_level
+import c_environment
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Main"
 GM_PATH = "/Game/TopDown/Blueprints/MainLevelGM.MainLevelGM_C"

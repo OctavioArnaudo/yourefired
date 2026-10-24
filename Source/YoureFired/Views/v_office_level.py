@@ -3,7 +3,7 @@
 # ============================================================
 
 import unreal
-from Builders import c_spawner
+import c_spawner
 
 CUBE_PATH = "/Engine/BasicShapes/Cube.Cube"
 SPHERE_PATH = "/Engine/BasicShapes/Sphere.Sphere"

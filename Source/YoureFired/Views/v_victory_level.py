@@ -2,7 +2,8 @@
 # YOU'RE FIRED - View: Victory UI Level (Lvl_Victory) - MVC View
 # ============================================================
 import unreal
-from Builders import s_level, c_environment
+import s_level
+import c_environment
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Victory"
 GM_PATH = "/Game/TopDown/Blueprints/VictoryLevelGM.VictoryLevelGM_C"

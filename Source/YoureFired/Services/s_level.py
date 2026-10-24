@@ -1,6 +1,6 @@
 import unreal
 import level_builder_util as legacy_utils
-from . import s_gamemode
+import s_gamemode
 
 def initialize_level(level_path, gamemode_path):
     """Service: Orquesta la inicialización de un nuevo nivel o carga uno existente con su GameMode."""

@@ -1,5 +1,5 @@
 import unreal
-from . import c_spawner as spawner
+import c_spawner as spawner
 
 def spawn_ui_elements(title):
     """Component: Crea elementos base para niveles de UI con iluminación brillante."""

@@ -2,7 +2,8 @@
 # YOU'RE FIRED - View: Defeat UI Level (Lvl_Defeat) - MVC View
 # ============================================================
 import unreal
-from Builders import s_level, c_environment
+import s_level
+import c_environment
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Defeat"
 GM_PATH = "/Game/TopDown/Blueprints/DefeatLevelGM.DefeatLevelGM_C"

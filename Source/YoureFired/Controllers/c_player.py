@@ -1,5 +1,5 @@
 import unreal
-from Builders import c_spawner
+import c_spawner
 
 def spawn_player_controller(name="PlayerController", position=(0, -1200, 100)):
     unreal.log("[Controller:Player] Spawning player character component...")
