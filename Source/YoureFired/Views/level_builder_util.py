@@ -67,6 +67,39 @@ def spawn_actor_by_class_path(name, class_path, fallback_mesh_path, position, sc
     log("Aviso: No se encontro " + class_path + ". Usando fallback mesh: " + fallback_mesh_path)
     return spawn_mesh(name, fallback_mesh_path, position, scale, rotation)
 
+def build_ui_level_elements(title_name):
+    """Configura un nivel exclusivo de UI: fondo plano vertical iluminado, cámara frontal y sin spawn de jugador."""
+    log("Configurando entorno exclusivo de UI para: " + title_name)
+
+    # Fondo temático vertical para UI
+    bg = spawn_mesh("UI_Backdrop_" + title_name, CUBE_PATH, (0, 800, 0), (0.5, 30.0, 20.0))
+
+    # Cámara UI
+    camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.CameraActor,
+        unreal.Vector(0, 0, 0),
+        unreal.Rotator(0, 0, 0)
+    )
+    if camera:
+        camera.set_actor_label("UI_Camera_" + title_name)
+
+    # Única iluminación limpia para evitar luces competidoras
+    dir_light = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.DirectionalLight,
+        unreal.Vector(0, 0, 500),
+        unreal.Rotator(-30, 0, 0)
+    )
+    if dir_light:
+        dir_light.set_actor_label("UI_Light_" + title_name)
+
+    skylight = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.SkyLight,
+        unreal.Vector(0, 0, 300),
+        unreal.Rotator(0, 0, 0)
+    )
+    if skylight:
+        skylight.set_actor_label("UI_SkyLight_" + title_name)
+
 def build_office_perimeter(floor_size=30.0, wall_height=3.0):
     """Construye el suelo y las 4 paredes perimetrales de la oficina"""
     log("Generando suelo y paredes perimetrales...")
