@@ -1,7 +1,6 @@
 # ============================================================
-# YOU'RE FIRED - View: Victory Level (Lvl_Victory) - MVC
+# YOU'RE FIRED - View: Victory UI Level (Lvl_Victory) - MVC View
 # ============================================================
-
 import unreal
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Victory"
@@ -10,17 +9,28 @@ def build_victory_level():
     unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
     unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
 
-    # Spawn Victory Podium / Stage
-    mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
-    if mesh:
-        podium = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
-        podium.set_actor_label("Victory_Podium")
-        podium.static_mesh_component.set_static_mesh(mesh)
-        podium.set_actor_scale3d(unreal.Vector(10, 10, 0.5))
+    mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Plane.Plane")
+    if not mesh:
+        mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
 
-    unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-50, 0, 0))
+    if mesh:
+        bg = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
+        bg.set_actor_label("UI_Background_Victory")
+        bg.static_mesh_component.set_static_mesh(mesh)
+        bg.set_actor_scale3d(unreal.Vector(25.0, 25.0, 1.0))
+
+    camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.CameraActor,
+        unreal.Vector(0, -1000, 300),
+        unreal.Rotator(-15, 90, 0)
+    )
+    if camera:
+        camera.set_actor_label("UI_VictoryCamera")
+
+    unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-45, 0, 0))
+
     unreal.EditorLevelLibrary.save_current_level()
-    unreal.log("[VictoryLevelView] Lvl_Victory creado correctamente.")
+    unreal.log("[VictoryLevelView] Lvl_Victory (UI Victory) generado correctamente.")
 
 if __name__ == "__main__":
     build_victory_level()

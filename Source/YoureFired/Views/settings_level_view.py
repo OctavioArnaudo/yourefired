@@ -1,5 +1,5 @@
 # ============================================================
-# YOU'RE FIRED - View: Settings Level (MVC View)
+# YOU'RE FIRED - View: Settings UI Level (Lvl_Settings) - MVC View
 # ============================================================
 import unreal
 
@@ -9,16 +9,28 @@ def build_settings_level():
     unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
     unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
 
-    mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
+    mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Plane.Plane")
+    if not mesh:
+        mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
+
     if mesh:
-        bg = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, -50), unreal.Rotator(0, 0, 0))
-        bg.set_actor_label("Settings_Background")
+        bg = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
+        bg.set_actor_label("UI_Background_Settings")
         bg.static_mesh_component.set_static_mesh(mesh)
-        bg.set_actor_scale3d(unreal.Vector(15, 15, 1))
+        bg.set_actor_scale3d(unreal.Vector(25.0, 25.0, 1.0))
+
+    camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.CameraActor,
+        unreal.Vector(0, -1000, 300),
+        unreal.Rotator(-15, 90, 0)
+    )
+    if camera:
+        camera.set_actor_label("UI_SettingsCamera")
 
     unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-45, 0, 0))
+
     unreal.EditorLevelLibrary.save_current_level()
-    unreal.log("[SettingsLevelView] Lvl_Settings generado correctamente.")
+    unreal.log("[SettingsLevelView] Lvl_Settings (UI Settings) generado correctamente.")
 
 if __name__ == "__main__":
     build_settings_level()

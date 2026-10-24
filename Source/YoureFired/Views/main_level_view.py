@@ -1,5 +1,5 @@
 # ============================================================
-# YOU'RE FIRED - View: Main Level / Main Menu (MVC View)
+# YOU'RE FIRED - View: Main Menu UI Level (Lvl_Main) - MVC View
 # ============================================================
 import unreal
 
@@ -9,16 +9,30 @@ def build_main_level():
     unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
     unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
 
-    mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
+    # UI Background Backdrop (Thematic Corporate Menu Backdrop)
+    mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Plane.Plane")
+    if not mesh:
+        mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
+
     if mesh:
-        bg = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, -50), unreal.Rotator(0, 0, 0))
-        bg.set_actor_label("MainMenu_Background")
+        bg = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(0, 0, 0), unreal.Rotator(0, 0, 0))
+        bg.set_actor_label("UI_Background_Main")
         bg.static_mesh_component.set_static_mesh(mesh)
-        bg.set_actor_scale3d(unreal.Vector(20, 20, 1))
+        bg.set_actor_scale3d(unreal.Vector(25.0, 25.0, 1.0))
+
+    # UI Camera framing the menu canvas
+    camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.CameraActor,
+        unreal.Vector(0, -1000, 300),
+        unreal.Rotator(-15, 90, 0)
+    )
+    if camera:
+        camera.set_actor_label("UI_MenuCamera")
 
     unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-45, 0, 0))
+
     unreal.EditorLevelLibrary.save_current_level()
-    unreal.log("[MainLevelView] Lvl_Main generado correctamente.")
+    unreal.log("[MainLevelView] Lvl_Main (UI Menu) generado correctamente.")
 
 if __name__ == "__main__":
     build_main_level()
