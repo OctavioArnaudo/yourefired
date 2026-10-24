@@ -6,12 +6,13 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UStaticMeshComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnStressChanged, float, CurrentStress, float, MaxStress);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCoffeeCountChanged, int32, CoffeeCount);
 
 /**
- * Player Character - An overworked employee navigating the office ladder to ask for a raise.
+ * Player Character - 2.5D Sprite-based Overworked Employee.
  */
 UCLASS()
 class YOUREFIRED_API AWorkerCharacter : public ACharacter
@@ -30,6 +31,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* TopDownCameraComponent;
+
+	/** 2.5D Sprite Visual Component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Worker | Visual")
+	UStaticMeshComponent* SpriteVisualComponent;
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -75,4 +80,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Worker | Actions")
 	void UseConsumable();
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+	void OnKeyQPressed();
+	void OnKeyEPressed();
+	void OnKeyEscPressed();
+	void OnKeyVPressed();
+	void OnKeyLPressed();
+	void OnLeftClickPressed();
+	void OnRightClickPressed();
 };
