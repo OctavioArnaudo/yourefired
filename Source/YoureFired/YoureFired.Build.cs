@@ -21,6 +21,8 @@ public class YoureFired : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			ModuleDirectory,
+			Path.Combine(ModuleDirectory, "Models"),
+			Path.Combine(ModuleDirectory, "Controllers"),
 			Path.Combine(ModuleDirectory, "Enemies"),
 			Path.Combine(ModuleDirectory, "Environment"),
 			Path.Combine(ModuleDirectory, "Items")
