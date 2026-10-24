@@ -1,28 +1,28 @@
-#include "OfficeGameMode.h"
+#include "YoureFiredGM.h"
 #include "OfficeGameState.h"
 #include "OfficePlayerController.h"
 #include "WorkerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
-AOfficeGameMode::AOfficeGameMode()
+AYoureFiredGM::AYoureFiredGM()
 {
 	DefaultPawnClass = AWorkerCharacter::StaticClass();
 	PlayerControllerClass = AOfficePlayerController::StaticClass();
 	GameStateClass = AOfficeGameState::StaticClass();
 }
 
-void AOfficeGameMode::BeginPlay()
+void AYoureFiredGM::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void AOfficeGameMode::OnPlayerFired()
+void AYoureFiredGM::OnPlayerFired()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Game Over: Stress level reached maximum. You're Fired!"));
 	OnGameOver.Broadcast();
 }
 
-void AOfficeGameMode::OnFloorCompleted()
+void AYoureFiredGM::OnFloorCompleted()
 {
 	AOfficeGameState* GS = GetGameState<AOfficeGameState>();
 	if (GS)

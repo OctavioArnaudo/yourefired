@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "OfficeGameMode.generated.h"
+#include "YoureFiredGM.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameOver);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFloorComplete, int32, ClearedFloor);
@@ -11,12 +11,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFloorComplete, int32, ClearedFloo
  * Main GameMode - Manages level progression and Game Over logic when stress hits maximum.
  */
 UCLASS()
-class YOUREFIRED_API AOfficeGameMode : public AGameModeBase
+class YOUREFIRED_API AYoureFiredGM : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AOfficeGameMode();
+	AYoureFiredGM();
 
 	virtual void BeginPlay() override;
 
