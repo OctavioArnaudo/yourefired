@@ -1,5 +1,7 @@
 import unreal
 
+PROTOTYPE_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_PrototypeGrid"
+
 def spawn_actor(name, class_path, position, rotation=None):
     """Component: Spawnea un actor por clase."""
     if rotation is None:
@@ -17,7 +19,7 @@ def spawn_actor(name, class_path, position, rotation=None):
     return actor
 
 def spawn_mesh(name, mesh_path, position, scale=(1, 1, 1), rotation=None):
-    """Component: Spawnea un StaticMeshActor."""
+    """Component: Spawnea un StaticMeshActor con material colorido de oficina."""
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
 
@@ -31,4 +33,10 @@ def spawn_mesh(name, mesh_path, position, scale=(1, 1, 1), rotation=None):
         actor.set_actor_label(name)
         actor.set_actor_scale3d(unreal.Vector(*scale))
         actor.static_mesh_component.set_static_mesh(mesh)
+
+        # Aplicar material colorista de prototipo
+        mat = unreal.EditorAssetLibrary.load_asset(PROTOTYPE_MAT_PATH)
+        if mat:
+            actor.static_mesh_component.set_material(0, mat)
+
     return actor

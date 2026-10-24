@@ -1,28 +1,27 @@
 # ============================================================
-# YOU'RE FIRED - Generador de Nivel Principal de Prueba (Gameplay Test Level)
+# YOU'RE FIRED - View: Office Level Environment Layout (Colorful & Bright)
 # ============================================================
 
 import unreal
-import level_builder_utils as utils
+from Builders import c_spawner
 
-LEVEL_PATH = "/Game/Generated/Lvl_OfficeFloorTest"
+CUBE_PATH = "/Engine/BasicShapes/Cube.Cube"
+SPHERE_PATH = "/Engine/BasicShapes/Sphere.Sphere"
+CYLINDER_PATH = "/Engine/BasicShapes/Cylinder.Cylinder"
+CONE_PATH = "/Engine/BasicShapes/Cone.Cone"
 
-def generate_office_level():
-    utils.log("Iniciando generacion del mapa de prueba You're Fired...")
+def build_office_layout():
+    unreal.log("[OfficeLevel] Construyendo diseño colorido y brillante de la oficina...")
 
-    # Crear carpeta de destino
-    unreal.EditorAssetLibrary.make_directory("/Game/Generated")
+    # 1. Perímetro y suelo
+    c_spawner.spawn_mesh("Floor_Main", CUBE_PATH, (0, 0, -50), (32.0, 32.0, 1.0))
+    wall_offset = 1600.0
+    c_spawner.spawn_mesh("Wall_North", CUBE_PATH, (0, wall_offset, 100), (1.0, 32.0, 3.0))
+    c_spawner.spawn_mesh("Wall_South", CUBE_PATH, (0, -wall_offset, 100), (1.0, 32.0, 3.0))
+    c_spawner.spawn_mesh("Wall_East", CUBE_PATH, (wall_offset, 0, 100), (32.0, 1.0, 3.0))
+    c_spawner.spawn_mesh("Wall_West", CUBE_PATH, (-wall_offset, 0, 100), (32.0, 1.0, 3.0))
 
-    # Crear nivel nuevo
-    created = unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
-    if not created:
-        utils.log("No se pudo crear el nivel en " + LEVEL_PATH)
-        return
-
-    # 1. Estructura del Piso de Oficina
-    utils.build_office_perimeter(floor_size=32.0, wall_height=3.0)
-
-    # 2. Cubículos de Oficina (Laberinto)
+    # 2. Cubículos de oficina
     cubicle_positions = [
         (-800, 600, 0),  (800, 600, 0),
         (-800, 0, 0),    (800, 0, 0),
@@ -30,110 +29,34 @@ def generate_office_level():
         (0, 400, 0),     (0, -400, 0)
     ]
     for idx, pos in enumerate(cubicle_positions):
-        utils.build_cubicle("Cubicle_{:02d}".format(idx + 1), pos)
+        cx, cy, cz = pos
+        c_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Desk", CUBE_PATH, (cx, cy, cz + 30), (2.0, 1.0, 0.6))
+        c_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Chair", CYLINDER_PATH, (cx, cy - 60, cz + 30), (0.4, 0.4, 0.6))
 
-    # 3. Jugador (WorkerCharacter)
-    utils.spawn_actor_by_class_path(
-        "Player_Worker",
-        "/Script/YoureFired.WorkerCharacter",
-        utils.SPHERE_PATH,
-        (0, -1200, 100),
-        (0.8, 0.8, 1.0)
-    )
+    # 3. Jugador y Enemigos
+    c_spawner.spawn_actor("Player_Worker", "/Script/YoureFired.WorkerCharacter", (0, -1200, 100))
 
-    # 4. Enemigos - Compañeros Tóxicos (CoworkerEnemy)
-    coworker_positions = [
-        (-800, 300, 75),
-        (800, -300, 75),
-        (0, 700, 75)
-    ]
+    coworker_positions = [(-800, 300, 75), (800, -300, 75), (0, 700, 75)]
     for idx, pos in enumerate(coworker_positions):
-        utils.spawn_actor_by_class_path(
-            "Coworker_{:02d}".format(idx + 1),
-            "/Script/YoureFired.CoworkerEnemy",
-            utils.CYLINDER_PATH,
-            pos,
-            (0.7, 0.7, 0.9)
-        )
+        c_spawner.spawn_actor(f"Coworker_{idx+1:02d}", "/Script/YoureFired.CoworkerEnemy", pos)
 
-    # 5. Enemigos - Supervisores Patrulleros (SupervisorEnemy)
-    supervisor_positions = [
-        (-400, -100, 75),
-        (400, 100, 75)
-    ]
+    supervisor_positions = [(-400, -100, 75), (400, 100, 75)]
     for idx, pos in enumerate(supervisor_positions):
-        utils.spawn_actor_by_class_path(
-            "Supervisor_{:02d}".format(idx + 1),
-            "/Script/YoureFired.SupervisorEnemy",
-            utils.CONE_PATH,
-            pos,
-            (0.8, 0.8, 1.2)
-        )
+        c_spawner.spawn_actor(f"Supervisor_{idx+1:02d}", "/Script/YoureFired.SupervisorEnemy", pos)
 
-    # 6. Pickups - Tazas de Café (CoffeePickup)
-    coffee_positions = [
-        (-800, 600, 60),
-        (800, -600, 60),
-        (0, -400, 60)
-    ]
-    for idx, pos in enumerate(coffee_positions):
-        utils.spawn_actor_by_class_path(
-            "CoffeePickup_{:02d}".format(idx + 1),
-            "/Script/YoureFired.CoffeePickup",
-            utils.CYLINDER_PATH,
-            pos,
-            (0.3, 0.3, 0.3)
-        )
+    # 4. Pickups y Puerta
+    c_spawner.spawn_actor("CoffeeItem", "/Script/YoureFired.CoffeePickup", (300, -800, 60))
+    c_spawner.spawn_actor("SignatureItem", "/Script/YoureFired.SignaturePickup", (0, -600, 60))
+    c_spawner.spawn_actor("FloorExit_Door", "/Script/YoureFired.OfficeDoor", (0, 1500, 100))
 
-    # 7. Pickups - Firmas de Aprobación (SignaturePickup)
-    signature_positions = [
-        (-800, -600, 60),
-        (800, 600, 60),
-        (0, 400, 60)
-    ]
-    for idx, pos in enumerate(signature_positions):
-        utils.spawn_actor_by_class_path(
-            "SignaturePickup_{:02d}".format(idx + 1),
-            "/Script/YoureFired.SignaturePickup",
-            utils.CUBE_PATH,
-            pos,
-            (0.4, 0.3, 0.05)
-        )
+    # 5. Cámara y Luces de alta intensidad para evitar oscuridad
+    cam = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0, 0, 2600), unreal.Rotator(-90, 0, 0))
+    cam.set_actor_label("Office_TopDownCamera")
 
-    # 8. Suministros de Oficina / Armas (WeaponBase)
-    weapon_positions = [
-        (-200, -800, 50),
-        (200, -800, 50),
-        (-300, 300, 50),
-        (300, 300, 50)
-    ]
-    for idx, pos in enumerate(weapon_positions):
-        utils.spawn_actor_by_class_path(
-            "OfficeWeapon_{:02d}".format(idx + 1),
-            "/Script/YoureFired.WeaponBase",
-            utils.CONE_PATH,
-            pos,
-            (0.4, 0.4, 0.4)
-        )
+    dir_light = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-50, -30, 0))
+    if dir_light:
+        dir_light.light_component.set_editor_property("intensity", 10.0)
 
-    # 9. Puerta de Salida del Piso (OfficeDoor)
-    utils.spawn_actor_by_class_path(
-        "FloorExit_Door",
-        "/Script/YoureFired.OfficeDoor",
-        utils.CUBE_PATH,
-        (0, 1500, 100),
-        (1.5, 0.3, 2.0)
-    )
-
-    # 10. Iluminación y Cámara Top-Down
-    utils.setup_lighting_and_camera(camera_height=2600.0)
-
-    # Guardar nivel
-    saved = unreal.EditorLevelLibrary.save_current_level()
-    if saved:
-        utils.log("Nivel guardado exitosamente en: " + LEVEL_PATH)
-    else:
-        utils.log("Error al guardar el nivel.")
-
-# Ejecución
-generate_office_level()
+    skylight = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 500), unreal.Rotator(0, 0, 0))
+    if skylight:
+        skylight.light_component.set_editor_property("intensity", 2.0)
