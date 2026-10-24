@@ -1,6 +1,8 @@
 import unreal
+from Services import s_asset_loader
 
-PROTOTYPE_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_PrototypeGrid"
+DEFAULT_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_PrototypeGrid"
+CUSTOM_MAT_PATH = "/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle"
 
 def spawn_actor(name, class_path, position, rotation=None):
     """Component: Spawnea un actor por clase."""
@@ -18,14 +20,18 @@ def spawn_actor(name, class_path, position, rotation=None):
         unreal.log("[Component:Spawner] Spawneado: " + name)
     return actor
 
-def spawn_mesh(name, mesh_path, position, scale=(1, 1, 1), rotation=None):
-    """Component: Spawnea un StaticMeshActor con material colorido de oficina."""
+def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None):
+    """Component: Spawnea un StaticMeshActor usando fallback inteligente a assets propios si existen."""
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
 
-    mesh = unreal.EditorAssetLibrary.load_asset(mesh_path)
+    # Ruta esperada para asset propio en Meshes/
+    custom_mesh_path = f"/Game/YoureFired/Meshes/{name}.{name}"
+
+    # Usar asset propio si existe, de lo contrario usar default con fallback asset loader
+    mesh = s_asset_loader.get_asset_with_fallback(custom_mesh_path, default_mesh_path)
     if not mesh:
-        unreal.log_error("No se pudo cargar mesh: " + mesh_path)
+        unreal.log_error("No se pudo cargar mesh para: " + name)
         return None
 
     actor = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(*position), rotation)
@@ -34,8 +40,8 @@ def spawn_mesh(name, mesh_path, position, scale=(1, 1, 1), rotation=None):
         actor.set_actor_scale3d(unreal.Vector(*scale))
         actor.static_mesh_component.set_static_mesh(mesh)
 
-        # Aplicar material colorista de prototipo
-        mat = unreal.EditorAssetLibrary.load_asset(PROTOTYPE_MAT_PATH)
+        # Asignar material con soporte para material propio en /Game/YoureFired/Materials/
+        mat = s_asset_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
         if mat:
             actor.static_mesh_component.set_material(0, mat)
 

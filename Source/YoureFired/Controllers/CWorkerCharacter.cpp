@@ -115,7 +115,7 @@ void AWorkerCharacter::UseConsumable()
 		OnCoffeeCountChanged.Broadcast(CoffeeCount);
 		UE_LOG(LogTemp, Log, TEXT("Worker drank Coffee (Key E)! Stress reduced by 25. Remaining Coffee: %d"), CoffeeCount);
 	}
-    else
+	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Coffee available to consume!"));
 	}
@@ -139,7 +139,7 @@ void AWorkerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void AWorkerCharacter::MoveForward(float Value)
 {
-	if/ *Value* / (Value != 0.0f)
+	if (Value != 0.0f)
 	{
 		AddMovementInput(FVector::ForwardVector, Value);
 	}
@@ -149,7 +149,7 @@ void AWorkerCharacter::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
-		AddMovementInput(FVector::RightVector, Value)->(); // Wait, syntax check
+		AddMovementInput(FVector::RightVector, Value);
 	}
 }
 
