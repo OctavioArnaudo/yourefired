@@ -2,12 +2,12 @@
 # YOU'RE FIRED - View: Settings UI Level (Lvl_Settings) - MVC View
 # ============================================================
 import unreal
+import level_builder_util as utils
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Settings"
 
 def build_settings_level():
-    unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
-    unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
+    utils.open_or_create_level(LEVEL_PATH)
 
     mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Plane.Plane")
     if not mesh:
@@ -30,7 +30,7 @@ def build_settings_level():
     unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-45, 0, 0))
 
     unreal.EditorLevelLibrary.save_current_level()
-    unreal.log("[SettingsLevelView] Lvl_Settings (UI Settings) generado correctamente.")
+    unreal.log("[SettingsLevelView] Lvl_Settings (UI Settings) generado/cargado correctamente.")
 
 if __name__ == "__main__":
     build_settings_level()

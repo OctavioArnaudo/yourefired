@@ -2,14 +2,13 @@
 # YOU'RE FIRED - View: Main Menu UI Level (Lvl_Main) - MVC View
 # ============================================================
 import unreal
+import level_builder_util as utils
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Main"
 
 def build_main_level():
-    unreal.EditorAssetLibrary.make_directory("/Game/YoureFired/Levels")
-    unreal.EditorLevelLibrary.new_level(LEVEL_PATH)
+    utils.open_or_create_level(LEVEL_PATH)
 
-    # UI Background Backdrop (Thematic Corporate Menu Backdrop)
     mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Plane.Plane")
     if not mesh:
         mesh = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/Cube.Cube")
@@ -20,7 +19,6 @@ def build_main_level():
         bg.static_mesh_component.set_static_mesh(mesh)
         bg.set_actor_scale3d(unreal.Vector(25.0, 25.0, 1.0))
 
-    # UI Camera framing the menu canvas
     camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.CameraActor,
         unreal.Vector(0, -1000, 300),
@@ -32,7 +30,7 @@ def build_main_level():
     unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-45, 0, 0))
 
     unreal.EditorLevelLibrary.save_current_level()
-    unreal.log("[MainLevelView] Lvl_Main (UI Menu) generado correctamente.")
+    unreal.log("[MainLevelView] Lvl_Main (UI Menu) generado/cargado correctamente.")
 
 if __name__ == "__main__":
     build_main_level()

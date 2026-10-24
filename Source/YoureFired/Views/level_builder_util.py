@@ -13,6 +13,17 @@ CONE_PATH = "/Engine/BasicShapes/Cone.Cone"
 def log(message):
     unreal.log("[YoureFiredBuilder] " + str(message))
 
+def open_or_create_level(level_path):
+    """Verifica si el nivel ya existe en la ruta definida. Si existe, lo carga; si no, crea uno nuevo."""
+    if unreal.EditorAssetLibrary.does_asset_exist(level_path):
+        log("Cargando nivel existente en ruta: " + level_path)
+        return unreal.EditorLevelLibrary.load_level(level_path)
+    else:
+        log("Creando nuevo nivel en ruta: " + level_path)
+        dir_path = level_path.rsplit("/", 1)[0]
+        unreal.EditorAssetLibrary.make_directory(dir_path)
+        return unreal.EditorLevelLibrary.new_level(level_path)
+
 def spawn_mesh(name, mesh_path, position, scale=(1, 1, 1), rotation=None):
     """Spawnea un StaticMeshActor con la malla especificada"""
     if rotation is None:
@@ -60,7 +71,6 @@ def build_office_perimeter(floor_size=30.0, wall_height=3.0):
     """Construye el suelo y las 4 paredes perimetrales de la oficina"""
     log("Generando suelo y paredes perimetrales...")
 
-    # Suelo Principal
     spawn_mesh(
         "Floor_Main",
         CUBE_PATH,
@@ -72,7 +82,6 @@ def build_office_perimeter(floor_size=30.0, wall_height=3.0):
     wall_scale_x = (1, floor_size, wall_height)
     wall_scale_y = (floor_size, 1, wall_height)
 
-    # Paredes Perimetrales
     spawn_mesh("Wall_North", CUBE_PATH, (0, wall_offset, 100), wall_scale_x)
     spawn_mesh("Wall_South", CUBE_PATH, (0, -wall_offset, 100), wall_scale_x)
     spawn_mesh("Wall_East", CUBE_PATH, (wall_offset, 0, 100), wall_scale_y)
@@ -82,18 +91,14 @@ def build_cubicle(name_prefix, center_pos, size_x=2.0, size_y=2.0):
     """Genera un cubículo de oficina compuesto por escritorios y particiones"""
     cx, cy, cz = center_pos
 
-    # Escritorio (Cubo estirado)
     spawn_mesh(name_prefix + "_Desk", CUBE_PATH, (cx, cy, cz + 30), (size_x, 1.0, 0.6))
-    # Silla (Cilindro)
     spawn_mesh(name_prefix + "_Chair", CYLINDER_PATH, (cx, cy - 60, cz + 30), (0.4, 0.4, 0.6))
-    # Partición/Pared corta del cubículo
     spawn_mesh(name_prefix + "_Divider", CUBE_PATH, (cx, cy + 80, cz + 75), (size_x + 0.5, 0.1, 1.5))
 
 def setup_lighting_and_camera(camera_height=2400.0):
     """Crea la luz direccional, skylight y la camara cenital top-down"""
     log("Configurando iluminacion y camara cenital...")
 
-    # Luz Direccional
     dir_light = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.DirectionalLight,
         unreal.Vector(0, 0, 1000),
@@ -102,7 +107,6 @@ def setup_lighting_and_camera(camera_height=2400.0):
     if dir_light:
         dir_light.set_actor_label("Main_Office_Light")
 
-    # SkyLight
     skylight = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.SkyLight,
         unreal.Vector(0, 0, 500),
@@ -111,7 +115,6 @@ def setup_lighting_and_camera(camera_height=2400.0):
     if skylight:
         skylight.set_actor_label("Office_SkyLight")
 
-    # Camara Cenital Top-Down
     camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.CameraActor,
         unreal.Vector(0, 0, camera_height),
