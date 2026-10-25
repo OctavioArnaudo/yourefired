@@ -22,5 +22,5 @@ def get_normalized_asset_name(name):
     if "Weapon" in name:
         return "WeaponBase"
     if "Player" in name:
-        return "Player_Worker"
+        return "Player"
     return name

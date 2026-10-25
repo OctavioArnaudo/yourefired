@@ -35,7 +35,7 @@ def build_office_layout():
         c_mesh_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Chair", CYLINDER_PATH, (cx, cy - 60, cz + 30), (0.4, 0.4, 0.6))
 
     # 3. Jugador y Enemigos
-    c_actor_spawner.spawn_actor("Player_Worker", "/Script/App.WorkerCharacter", (0, -1200, 100))
+    c_actor_spawner.spawn_actor("Player", "/Script/App.PlayerCharacter", (0, -1200, 100))
 
     coworker_positions = [(-800, 300, 75), (800, -300, 75), (0, 700, 75)]
     for idx, pos in enumerate(coworker_positions):

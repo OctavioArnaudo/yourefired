@@ -23,7 +23,7 @@ def ensure_asset_placeholders():
         ("/Game/YoureFired/Meshes/Cubicle_Chair.Cubicle_Chair", "/Engine/BasicShapes/Cylinder.Cylinder"),
 
         # Personajes y Enemigos
-        ("/Game/YoureFired/Meshes/Player_Worker.Player_Worker", "/Engine/BasicShapes/Sphere.Sphere"),
+        ("/Game/YoureFired/Meshes/Player.Player", "/Engine/BasicShapes/Sphere.Sphere"),
         ("/Game/YoureFired/Meshes/CoworkerEnemy.CoworkerEnemy", "/Engine/BasicShapes/Cylinder.Cylinder"),
         ("/Game/YoureFired/Meshes/SupervisorEnemy.SupervisorEnemy", "/Engine/BasicShapes/Cone.Cone"),
 
