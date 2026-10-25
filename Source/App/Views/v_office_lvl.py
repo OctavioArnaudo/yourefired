@@ -4,7 +4,7 @@
 
 import unreal
 import c_actor_spawner
-import c_mesh_spawner
+import c_spawner_sm as c_mesh_spawner
 
 CUBE_PATH = "/Engine/BasicShapes/Cube.Cube"
 SPHERE_PATH = "/Engine/BasicShapes/Sphere.Sphere"
