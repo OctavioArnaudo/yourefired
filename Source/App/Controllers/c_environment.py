@@ -1,5 +1,5 @@
 import unreal
-import c_mesh_spawner as mesh_spawner
+import c_spawner_sm as mesh_spawner
 
 def spawn_ui_elements(title):
     """Component: Crea elementos base para niveles de UI con iluminación brillante en tiempo real."""

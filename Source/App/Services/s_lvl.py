@@ -1,5 +1,5 @@
 import unreal
-import s_gamemode
+import s_gm
 
 def open_or_create_level(level_path):
     """Service: Carga un nivel existente o crea uno nuevo en la ruta dada."""
@@ -39,5 +39,5 @@ def open_or_create_level(level_path):
 def initialize_level(level_path, gamemode_path):
     """Service: Orquesta la inicialización de un nuevo nivel o carga uno existente con su GameMode."""
     open_or_create_level(level_path)
-    s_gamemode.set_level_gamemode(level_path, gamemode_path)
+    s_gm.set_level_gamemode(level_path, gamemode_path)
     unreal.log("[Service:Level] Nivel inicializado: " + level_path)
