@@ -1,13 +1,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class YoureFiredTarget : TargetRules
+public class YoureFiredEditorTarget : TargetRules
 {
-	public YoureFiredTarget(TargetInfo Target) : base(Target)
+	public YoureFiredEditorTarget(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
-		ExtraModuleNames.Add("YoureFired");
+		ExtraModuleNames.Add("App");
 	}
 }
