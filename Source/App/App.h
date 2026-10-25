@@ -2,4 +2,4 @@
 
 #include "CoreMinimal.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(LogYoureFired, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(LogApp, Log, All);

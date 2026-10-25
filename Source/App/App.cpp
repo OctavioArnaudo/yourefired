@@ -1,6 +1,6 @@
-#include "YoureFired.h"
+#include "App.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_MODULE(FDefaultGameModuleImpl, YoureFired);
+IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, App, "App");
 
-DEFINE_LOG_CATEGORY(LogYoureFired);
+DEFINE_LOG_CATEGORY(LogApp);
