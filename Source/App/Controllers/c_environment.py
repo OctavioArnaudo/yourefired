@@ -1,10 +1,10 @@
 import unreal
-import c_spawner as spawner
+import c_mesh_spawner as mesh_spawner
 
 def spawn_ui_elements(title):
     """Component: Crea elementos base para niveles de UI con iluminación brillante."""
     # Fondo UI
-    spawner.spawn_mesh("UI_Backdrop_" + title, "/Engine/BasicShapes/Cube.Cube", (0, 800, 0), (0.5, 30.0, 20.0))
+    mesh_spawner.spawn_mesh("UI_Backdrop_" + title, "/Engine/BasicShapes/Cube.Cube", (0, 800, 0), (0.5, 30.0, 20.0))
 
     # Cámara UI
     cam = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0,0,0), unreal.Rotator(0,0,0))
