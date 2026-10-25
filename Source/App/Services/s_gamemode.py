@@ -14,15 +14,12 @@ def set_level_gamemode(level_path, gm_class_path):
             gm_class = unreal.load_class(None, gm_class_path)
 
     if not gm_class:
-        # Intentar cargar clase C++ o fallback a GameModeBase nativo de Unreal
-        gm_class = unreal.load_class(None, "/Script/App.YoureFiredGM")
-        if not gm_class:
-            gm_class = getattr(unreal, "GameModeBase", None) or getattr(unreal, "GameMode", None)
+        # Fallback a GameModeBase nativo de Unreal (evita errores si el BP o clase C++ personalizada no existe aún)
+        gm_class = getattr(unreal, "GameModeBase", None) or getattr(unreal, "GameMode", None)
 
     if gm_class:
         world_settings = world.get_world_settings()
         property_set = False
-        # Probar propiedades válidas de AWorldSettings en UE 5
         for prop_name in ["default_game_mode", "default_game_mode_class", "game_mode_override"]:
             try:
                 world_settings.set_editor_property(prop_name, gm_class)

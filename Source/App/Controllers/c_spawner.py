@@ -17,18 +17,17 @@ DEFAULT_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_Prototype
 CUSTOM_MAT_PATH = "/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle"
 
 def spawn_actor(name, class_path, position, rotation=None):
-    """Component: Spawnea un actor por clase con soporte para assets propios."""
+    """Component: Spawnea un actor por clase con soporte para assets propios y fallback nativo."""
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
 
     actor_class = unreal.load_class(None, class_path)
-    if not actor_class and class_path.startswith("/Script/YoureFired."):
-        app_class_path = class_path.replace("/Script/YoureFired.", "/Script/App.")
-        actor_class = unreal.load_class(None, app_class_path)
-
     if not actor_class:
-        unreal.log_error("No se pudo cargar la clase: " + class_path)
-        return None
+        # Fallback automático a clases nativas si la clase específica no está compilada/definida
+        if "Character" in class_path or "Worker" in name or "Coworker" in name or "Supervisor" in name:
+            actor_class = unreal.Character
+        else:
+            actor_class = unreal.Actor
 
     actor = unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class, unreal.Vector(*position), rotation)
     if actor:
