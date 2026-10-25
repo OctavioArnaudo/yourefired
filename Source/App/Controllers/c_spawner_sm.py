@@ -13,12 +13,13 @@ if services_dir not in sys.path:
 
 import s_asset_loader
 import s_asset_normalizer
+import s_color
 
 DEFAULT_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_PrototypeGrid"
 CUSTOM_MAT_PATH = "/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle"
 
 def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None):
-    """Component: Spawnea un StaticMeshActor usando fallback inteligente a mallas y materiales propios."""
+    """Component: Spawnea un StaticMeshActor usando fallback inteligente y coloración dinámica definida."""
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
 
@@ -39,5 +40,18 @@ def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None
         mat = s_asset_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
         if mat:
             actor.static_mesh_component.set_material(0, mat)
+
+        # Asignar color dinámico en tiempo real mediante el servicio s_color
+        dyn_mat = actor.static_mesh_component.create_and_set_material_instance_dynamic(0)
+        if dyn_mat:
+            color = s_color.get_color_for_name(name)
+            try:
+                dyn_mat.set_vector_parameter_value("BaseColor", color)
+            except Exception:
+                pass
+            try:
+                dyn_mat.set_vector_parameter_value("Color", color)
+            except Exception:
+                pass
 
     return actor
