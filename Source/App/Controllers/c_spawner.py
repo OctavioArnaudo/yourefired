@@ -22,6 +22,10 @@ def spawn_actor(name, class_path, position, rotation=None):
         rotation = unreal.Rotator(0, 0, 0)
 
     actor_class = unreal.load_class(None, class_path)
+    if not actor_class and class_path.startswith("/Script/YoureFired."):
+        app_class_path = class_path.replace("/Script/YoureFired.", "/Script/App.")
+        actor_class = unreal.load_class(None, app_class_path)
+
     if not actor_class:
         unreal.log_error("No se pudo cargar la clase: " + class_path)
         return None
