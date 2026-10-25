@@ -34,20 +34,20 @@ def build_office_layout():
         c_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Chair", CYLINDER_PATH, (cx, cy - 60, cz + 30), (0.4, 0.4, 0.6))
 
     # 3. Jugador y Enemigos
-    c_spawner.spawn_actor("Player_Worker", "/Script/YoureFired.WorkerCharacter", (0, -1200, 100))
+    c_spawner.spawn_actor("Player_Worker", "/Script/App.WorkerCharacter", (0, -1200, 100))
 
     coworker_positions = [(-800, 300, 75), (800, -300, 75), (0, 700, 75)]
     for idx, pos in enumerate(coworker_positions):
-        c_spawner.spawn_actor(f"Coworker_{idx+1:02d}", "/Script/YoureFired.CoworkerEnemy", pos)
+        c_spawner.spawn_actor(f"Coworker_{idx+1:02d}", "/Script/App.CoworkerEnemy", pos)
 
     supervisor_positions = [(-400, -100, 75), (400, 100, 75)]
     for idx, pos in enumerate(supervisor_positions):
-        c_spawner.spawn_actor(f"Supervisor_{idx+1:02d}", "/Script/YoureFired.SupervisorEnemy", pos)
+        c_spawner.spawn_actor(f"Supervisor_{idx+1:02d}", "/Script/App.SupervisorEnemy", pos)
 
     # 4. Pickups y Puerta
-    c_spawner.spawn_actor("CoffeeItem", "/Script/YoureFired.CoffeePickup", (300, -800, 60))
-    c_spawner.spawn_actor("SignatureItem", "/Script/YoureFired.SignaturePickup", (0, -600, 60))
-    c_spawner.spawn_actor("FloorExit_Door", "/Script/YoureFired.OfficeDoor", (0, 1500, 100))
+    c_spawner.spawn_actor("CoffeeItem", "/Script/App.CoffeePickup", (300, -800, 60))
+    c_spawner.spawn_actor("SignatureItem", "/Script/App.SignaturePickup", (0, -600, 60))
+    c_spawner.spawn_actor("FloorExit_Door", "/Script/App.OfficeDoor", (0, 1500, 100))
 
     # 5. Cámara y Luces de alta intensidad para evitar oscuridad
     cam = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.CameraActor, unreal.Vector(0, 0, 2600), unreal.Rotator(-90, 0, 0))

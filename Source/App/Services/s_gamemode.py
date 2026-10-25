@@ -17,8 +17,6 @@ def set_level_gamemode(level_path, gm_class_path):
         # Intentar cargar clase C++ o fallback a GameModeBase nativo de Unreal
         gm_class = unreal.load_class(None, "/Script/App.YoureFiredGM")
         if not gm_class:
-            gm_class = unreal.load_class(None, "/Script/YoureFired.YoureFiredGM")
-        if not gm_class:
             gm_class = getattr(unreal, "GameModeBase", None) or getattr(unreal, "GameMode", None)
 
     if gm_class:
