@@ -1,9 +1,9 @@
 using UnrealBuildTool;
 using System.IO;
 
-public class YoureFired : ModuleRules
+public class App : ModuleRules
 {
-	public YoureFired(ReadOnlyTargetRules Target) : base(Target)
+	public App(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -14,18 +14,21 @@ public class YoureFired : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"NavigationSystem",
-			"AIModule"
+			"AIModule",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
-		PublicIncludePaths.AddRange(new string[] {
-			ModuleDirectory,
-			Path.Combine(ModuleDirectory, "Models"),
-			Path.Combine(ModuleDirectory, "Controllers"),
-			Path.Combine(ModuleDirectory, "Enemies"),
-			Path.Combine(ModuleDirectory, "Environment"),
-			Path.Combine(ModuleDirectory, "Items")
-		});
+		var includePaths = new System.Collections.Generic.List<string> { ModuleDirectory };
+		foreach (var subDir in new string[] { "Models", "Controllers", "Services", "Views", "Interfaces", "Enemies", "Environment", "Items" })
+		{
+			var fullPath = Path.Combine(ModuleDirectory, subDir);
+			if (Directory.Exists(fullPath))
+			{
+				includePaths.Add(fullPath);
+			}
+		}
+		PublicIncludePaths.AddRange(includePaths);
 	}
 }
