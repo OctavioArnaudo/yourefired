@@ -29,8 +29,8 @@ def main():
 
     try:
         # 1. Delegar generación de placeholders al servicio dedicado
-        import s_placeholder_manager
-        s_placeholder_manager.ensure_asset_placeholders()
+        import s_placeholder
+        s_placeholder.ensure_asset_placeholders()
 
         # 2. Delegar construcción de niveles al orquestador de mundos
         import v_world_levels
