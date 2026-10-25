@@ -1,12 +1,12 @@
 import unreal
-import s_level
+import s_lvl
 import c_environment
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Main"
 GM_PATH = "/Game/TopDown/Blueprints/MainLevelGM.MainLevelGM_C"
 
 def build_main_level():
-    s_level.initialize_level(LEVEL_PATH, GM_PATH)
+    s_lvl.initialize_level(LEVEL_PATH, GM_PATH)
     c_environment.spawn_ui_elements("Main")
 
     if unreal.EditorLevelLibrary.save_current_level():

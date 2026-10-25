@@ -3,8 +3,8 @@
 # ============================================================
 
 import unreal
-import s_level
-import v_office_level
+import s_lvl
+import v_office_lvl
 
 LEVEL_PATH = "/Game/YoureFired/Levels/Lvl_Pilot"
 GM_PATH = "/Game/TopDown/Blueprints/PilotLevelGM.PilotLevelGM_C"
@@ -13,10 +13,10 @@ def build_pilot_level():
     unreal.log("[PilotLevelView] Inicializando nivel wrapper Lvl_Pilot...")
 
     # 1. Inicializar nivel y GameMode
-    s_level.initialize_level(LEVEL_PATH, GM_PATH)
+    s_lvl.initialize_level(LEVEL_PATH, GM_PATH)
 
     # 2. Construir todo el contenido de la oficina dentro del nivel wrapper
-    v_office_level.build_office_layout()
+    v_office_lvl.build_office_layout()
 
     # 3. Guardar el nivel completo
     if unreal.EditorLevelLibrary.save_current_level():

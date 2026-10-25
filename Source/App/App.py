@@ -33,8 +33,8 @@ def main():
         s_placeholder.ensure_asset_placeholders()
 
         # 2. Delegar construcción de niveles al orquestador de mundos
-        import v_world_levels
-        v_world_levels.generate_all_levels()
+        import v_world_lvl
+        v_world_lvl.generate_all_levels()
 
         unreal.log("[YoureFiredMaster] ========================================")
         unreal.log("[YoureFiredMaster] ¡SECUENCIA MAESTRA COMPLETADA CON EXITO!")
