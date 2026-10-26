@@ -1,0 +1,2 @@
+﻿#include "IActorSpawner.h"
+

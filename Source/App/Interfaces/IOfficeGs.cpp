@@ -1,0 +1,2 @@
+﻿#include "IOfficeGs.h"
+
