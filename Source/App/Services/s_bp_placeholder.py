@@ -5,22 +5,22 @@ import unreal
 import os
 
 BLUEPRINT_DEFINITIONS = [
-    ("/Game/YoureFired/Blueprints/BP_Player", unreal.Character, "/Script/App.PlayerCharacter"),
-    ("/Game/YoureFired/Blueprints/BP_CoworkerEnemy", unreal.Character, "/Script/App.CoworkerEnemy"),
-    ("/Game/YoureFired/Blueprints/BP_SupervisorEnemy", unreal.Character, "/Script/App.SupervisorEnemy"),
-    ("/Game/YoureFired/Blueprints/BP_CoffeeItem", unreal.Actor, "/Script/App.CoffeePickup"),
-    ("/Game/YoureFired/Blueprints/BP_SignatureItem", unreal.Actor, "/Script/App.SignaturePickup"),
-    ("/Game/YoureFired/Blueprints/BP_OfficeDoor", unreal.Actor, "/Script/App.OfficeDoor"),
-    ("/Game/YoureFired/Blueprints/BP_WeaponBase", unreal.Actor, "/Script/App.Weapon")
+    ("/Game/YoureFired/Blueprints/BP_Player", unreal.Character, ["CPlayerCharacter", "CPlayerActor", "PlayerCharacter"]),
+    ("/Game/YoureFired/Blueprints/BP_CoworkerEnemy", unreal.Character, ["CCoworkerEnemy", "CoworkerEnemy"]),
+    ("/Game/YoureFired/Blueprints/BP_SupervisorEnemy", unreal.Character, ["CSupervisorEnemy", "SupervisorEnemy"]),
+    ("/Game/YoureFired/Blueprints/BP_CoffeeItem", unreal.Actor, ["CCoffeePickup", "CoffeePickup"]),
+    ("/Game/YoureFired/Blueprints/BP_SignatureItem", unreal.Actor, ["CSignaturePickup", "SignaturePickup"]),
+    ("/Game/YoureFired/Blueprints/BP_OfficeDoor", unreal.Actor, ["CDoor", "OfficeDoor"]),
+    ("/Game/YoureFired/Blueprints/BP_WeaponBase", unreal.Actor, ["CWeapon", "WeaponBase"])
 ]
 
 def ensure_bp_placeholders():
-    """Service: Garantiza la existencia física de todos los Blueprints lógicos del juego con clases padre apropiadas."""
+    """Service: Garantiza la existencia física de todos los Blueprints lógicos del juego con clases padre apropiadas sin advertencias."""
     unreal.log("[Service:BP_Placeholder] Verificando Blueprints lógicos (BP_)...")
     content_dir = unreal.Paths.project_content_dir()
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 
-    for bp_path, default_parent, cpp_class_path in BLUEPRINT_DEFINITIONS:
+    for bp_path, default_parent, cpp_class_names in BLUEPRINT_DEFINITIONS:
         relative_path = bp_path.replace("/Game/", "") + ".uasset"
         disk_path = os.path.join(content_dir, relative_path)
 
@@ -33,10 +33,11 @@ def ensure_bp_placeholders():
 
             try:
                 parent_class = default_parent
-                if cpp_class_path:
-                    cpp_class = unreal.load_class(None, cpp_class_path)
-                    if cpp_class:
-                        parent_class = cpp_class
+                for name in cpp_class_names:
+                    cls = getattr(unreal, name, None)
+                    if cls:
+                        parent_class = cls
+                        break
 
                 factory = unreal.BlueprintFactory()
                 factory.set_editor_property("parent_class", parent_class)

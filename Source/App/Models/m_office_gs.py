@@ -1,7 +1,11 @@
+﻿# ============================================================
+# YOU'RE FIRED - Model : OfficeGs
+# ============================================================
 import unreal
 
-class MOfficeGSData:
-    """Model data for Office GameState."""
-    def __init__(self):
-        self.signatures_collected = 0
-        self.required_signatures = 3
+class MOfficeGsModel:
+    """Model: Datos y estado de OfficeGs."""
+    def __init__(self, value=100.0, enabled=True):
+        self.value = value
+        self.enabled = enabled
+        self.name = "OfficeGs"

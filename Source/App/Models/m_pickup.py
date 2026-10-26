@@ -1,7 +1,11 @@
+﻿# ============================================================
+# YOU'RE FIRED - Model : Pickup
+# ============================================================
 import unreal
 
-class MPickupData:
-    """Model data for Pickup items."""
-    def __init__(self, item_value=1.0):
-        self.item_value = item_value
-        self.b_is_collected = False
+class MPickupModel:
+    """Model: Datos y estado de Pickup."""
+    def __init__(self, value=100.0, enabled=True):
+        self.value = value
+        self.enabled = enabled
+        self.name = "Pickup"

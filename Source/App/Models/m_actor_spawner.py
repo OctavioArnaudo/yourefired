@@ -1,5 +1,11 @@
 ﻿# ============================================================
-# YOU'RE FIRED - Models : ActorSpawner
+# YOU'RE FIRED - Model : ActorSpawner
 # ============================================================
 import unreal
 
+class MActorSpawnerModel:
+    """Model: Datos y estado de ActorSpawner."""
+    def __init__(self, value=100.0, enabled=True):
+        self.value = value
+        self.enabled = enabled
+        self.name = "ActorSpawner"
