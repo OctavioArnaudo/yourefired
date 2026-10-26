@@ -12,13 +12,9 @@ GM_PATH = "/Game/TopDown/Blueprints/PilotLevelGM.PilotLevelGM_C"
 def build_pilot_level():
     unreal.log("[PilotLevelView] Inicializando nivel wrapper Lvl_Pilot...")
 
-    # 1. Inicializar nivel y GameMode
     s_lvl.initialize_level(LEVEL_PATH, GM_PATH)
-
-    # 2. Construir todo el contenido de la oficina dentro del nivel wrapper
     v_office_lvl.build_office_layout()
 
-    # 3. Guardar el nivel completo
     if unreal.EditorLevelLibrary.save_current_level():
         unreal.log("[PilotLevelView] Lvl_Pilot (Wrapper) guardado exitosamente en: " + LEVEL_PATH)
 
