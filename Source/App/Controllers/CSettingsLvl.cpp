@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CSettingsLvl.h"
 
-// CSettingsLevel Controller Implementation stub
+UCSettingsLvl::UCSettingsLvl()
+{
+}

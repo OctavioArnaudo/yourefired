@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CPilotLvl.h"
 
-// CPilotLevel Controller Implementation stub
+UCPilotLvl::UCPilotLvl()
+{
+}

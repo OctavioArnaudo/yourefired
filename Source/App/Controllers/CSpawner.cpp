@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CSpawner.h"
 
-// CSpawner Controller Implementation stub
+UCSpawner::UCSpawner()
+{
+}

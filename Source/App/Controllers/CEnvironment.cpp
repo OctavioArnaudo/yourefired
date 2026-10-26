@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CEnvironment.h"
 
-// CEnvironment Controller Implementation stub
+UCEnvironment::UCEnvironment()
+{
+}

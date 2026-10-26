@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CMainLvl.h"
 
-// CMainLevel Controller Implementation stub
+UCMainLvl::UCMainLvl()
+{
+}

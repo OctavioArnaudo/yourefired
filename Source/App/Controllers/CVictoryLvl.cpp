@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CVictoryLvl.h"
 
-// CVictoryLevel Controller Implementation stub
+UCVictoryLvl::UCVictoryLvl()
+{
+}

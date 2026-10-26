@@ -1,3 +1,5 @@
-#include "CoreMinimal.h"
+#include "CDefeatLvl.h"
 
-// CDefeatLevel Controller Implementation stub
+UCDefeatLvl::UCDefeatLvl()
+{
+}
