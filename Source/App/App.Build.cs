@@ -15,7 +15,8 @@ public class App : ModuleRules
 			"EnhancedInput",
 			"NavigationSystem",
 			"AIModule",
-			"UMG"
+			"UMG",
+			"Paper2D"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
