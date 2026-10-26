@@ -1,6 +1,7 @@
 ﻿# ============================================================
 # YOU'RE FIRED - Model: Static Mesh Placeholder Definitions
 # ============================================================
+import unreal
 
 SM_PLACEHOLDERS = [
     ("/Game/YoureFired/Meshes/SM_FloorMain.SM_FloorMain", "/Engine/BasicShapes/Cube.Cube"),
@@ -18,3 +19,9 @@ SM_PLACEHOLDERS = [
     ("/Game/YoureFired/Meshes/SM_OfficeDoor.SM_OfficeDoor", "/Engine/BasicShapes/Cube.Cube"),
     ("/Game/YoureFired/Meshes/SM_WeaponBase.SM_WeaponBase", "/Engine/BasicShapes/Cone.Cone")
 ]
+
+class MSmPlaceholderData:
+    """Model: Definición de datos para Mallas Estáticas Placeholders."""
+    def __init__(self, value=100.0, is_active=True):
+        self.value = value
+        self.is_active = is_active

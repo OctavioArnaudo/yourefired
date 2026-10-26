@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IGm.generated.h"
 
-UCLASS()
-class APP_API IGm : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIGm : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIGm();
-};
+	UIGm();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIGm(const FVector& TargetLocation);
+};

@@ -37,3 +37,9 @@ COLOR_PALETTE = {
     "UI_Button": unreal.LinearColor(0.0, 0.8, 1.0, 1.0),
     "UI": unreal.LinearColor(0.1, 0.7, 1.0, 1.0)
 }
+
+class MColorData:
+    """Model: Definición de datos de color."""
+    def __init__(self, value=100.0, is_active=True):
+        self.value = value
+        self.is_active = is_active

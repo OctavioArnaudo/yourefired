@@ -1,19 +1,23 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "UObject/NoExportTypes.h"
 #include "IPickup.generated.h"
 
-UINTERFACE(MinimalAPI)
-class UIPickup : public UInterface
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIPickup : public UObject
 {
-\tGENERATED_BODY()
-};
-
-class IIPickup
-{
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-};
+	UIPickup();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIPickup(const FVector& TargetLocation);
+};

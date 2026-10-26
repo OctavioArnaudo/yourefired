@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MSettingsLvl.generated.h"
 
-UCLASS()
-class APP_API MSettingsLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMSettingsLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMSettingsLvl();
-};
+	UMSettingsLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMSettingsLvl(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CPlayerXyMovement.generated.h"
 
-UCLASS()
-class APP_API CPlayerXyMovement : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCPlayerXyMovement : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCPlayerXyMovement();
-};
+	UCPlayerXyMovement();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCPlayerXyMovement(const FVector& TargetLocation);
+};

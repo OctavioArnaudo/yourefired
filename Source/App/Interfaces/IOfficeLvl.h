@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IOfficeLvl.generated.h"
 
-UCLASS()
-class APP_API IOfficeLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIOfficeLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIOfficeLvl();
-};
+	UIOfficeLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIOfficeLvl(const FVector& TargetLocation);
+};

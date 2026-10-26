@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MWbpHud.generated.h"
 
-UCLASS()
-class APP_API MWbpHud : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMWbpHud : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMWbpHud();
-};
+	UMWbpHud();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMWbpHud(const FVector& TargetLocation);
+};

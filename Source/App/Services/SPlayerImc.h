@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SPlayerImc.generated.h"
 
-UCLASS()
-class APP_API SPlayerImc : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USPlayerImc : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSPlayerImc();
-};
+	USPlayerImc();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSPlayerImc(const FVector& TargetLocation);
+};

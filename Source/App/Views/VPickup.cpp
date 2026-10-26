@@ -1,6 +1,12 @@
 ﻿#include "VPickup.h"
 
-VPickup::VPickup()
+UVPickup::UVPickup()
+	: IdentifierName(TEXT("VPickup")), bIsActive(true)
 {
 }
 
+bool UVPickup::ProcessVPickup(const FVector& TargetLocation)
+{
+	UE_LOG(LogTemp, Log, TEXT("[UVPickup] Processing Views operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
+	return bIsActive;
+}

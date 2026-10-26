@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SCoworkerEnemy.generated.h"
 
-UCLASS()
-class APP_API SCoworkerEnemy : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USCoworkerEnemy : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSCoworkerEnemy();
-};
+	USCoworkerEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSCoworkerEnemy(const FVector& TargetLocation);
+};

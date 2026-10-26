@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SEnemy.generated.h"
 
-UCLASS()
-class APP_API SEnemy : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USEnemy : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSEnemy();
-};
+	USEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSEnemy(const FVector& TargetLocation);
+};

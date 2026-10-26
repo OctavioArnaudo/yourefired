@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MUaNormalizer.generated.h"
 
-UCLASS()
-class APP_API MUaNormalizer : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMUaNormalizer : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMUaNormalizer();
-};
+	UMUaNormalizer();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMUaNormalizer(const FVector& TargetLocation);
+};

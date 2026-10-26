@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MActorSpawner.generated.h"
 
-UCLASS()
-class APP_API MActorSpawner : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMActorSpawner : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMActorSpawner();
-};
+	UMActorSpawner();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMActorSpawner(const FVector& TargetLocation);
+};

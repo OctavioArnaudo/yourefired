@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IWorldLvl.generated.h"
 
-UCLASS()
-class APP_API IWorldLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIWorldLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIWorldLvl();
-};
+	UIWorldLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIWorldLvl(const FVector& TargetLocation);
+};

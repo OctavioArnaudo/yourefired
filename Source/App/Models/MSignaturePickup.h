@@ -1,19 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "PickupBase.h"
-#include "SignaturePickup.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MSignaturePickup.generated.h"
 
-/**
- * Approval Signature Pickup - Increments floor signatures count in GameState.
- */
-UCLASS()
-class YOUREFIRED_API ASignaturePickup : public APickupBase
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMSignaturePickup : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ASignaturePickup();
+	UMSignaturePickup();
 
-	virtual void OnPickedUp(AActor* PickupInstigator) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMSignaturePickup(const FVector& TargetLocation);
 };

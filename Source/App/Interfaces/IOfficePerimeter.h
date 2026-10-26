@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IOfficePerimeter.generated.h"
 
-UCLASS()
-class APP_API IOfficePerimeter : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIOfficePerimeter : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIOfficePerimeter();
-};
+	UIOfficePerimeter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIOfficePerimeter(const FVector& TargetLocation);
+};

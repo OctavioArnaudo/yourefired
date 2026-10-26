@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IUaLoader.generated.h"
 
-UCLASS()
-class APP_API IUaLoader : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIUaLoader : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIUaLoader();
-};
+	UIUaLoader();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIUaLoader(const FVector& TargetLocation);
+};

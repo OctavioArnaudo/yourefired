@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "ISmPlaceholder.generated.h"
 
-UCLASS()
-class APP_API ISmPlaceholder : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UISmPlaceholder : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tISmPlaceholder();
-};
+	UISmPlaceholder();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessISmPlaceholder(const FVector& TargetLocation);
+};

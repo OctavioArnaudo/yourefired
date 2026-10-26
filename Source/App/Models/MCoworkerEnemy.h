@@ -1,25 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyBase.h"
-#include "CoworkerEnemy.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MCoworkerEnemy.generated.h"
 
-/**
- * Coworker Enemy - Distracts player with idle chatter, gossip, and useless tasks, raising stress.
- */
-UCLASS()
-class YOUREFIRED_API ACoworkerEnemy : public AEnemyBase
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMCoworkerEnemy : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ACoworkerEnemy();
+	UMCoworkerEnemy();
 
-protected:
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
 
-public:
-	/** Specific gossip / chatter attack */
-	UFUNCTION(BlueprintCallable, Category = "Coworker Actions")
-	void StartGossipChatter();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMCoworkerEnemy(const FVector& TargetLocation);
 };

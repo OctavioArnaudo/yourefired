@@ -1,14 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "COfficeGM.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "COfficeGm.generated.h"
 
-UCLASS()
-class APP_API ACOfficeGM : public AGameModeBase
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCOfficeGm : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ACOfficeGM();
+	UCOfficeGm();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCOfficeGm(const FVector& TargetLocation);
 };

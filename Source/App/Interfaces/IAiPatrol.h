@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IAiPatrol.generated.h"
 
-UCLASS()
-class APP_API IAiPatrol : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIAiPatrol : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIAiPatrol();
-};
+	UIAiPatrol();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIAiPatrol(const FVector& TargetLocation);
+};

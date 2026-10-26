@@ -6,64 +6,54 @@ import os
 import m_bp_placeholder
 
 def setup_bp_player_components(bp):
-    """Service: Configura SCS (Simple Construction Script) de BP_Player con PaperFlipbookComponent y Orthographic Camera."""
-    scs = bp.get_editor_property("simple_construction_script")
-    if not scs:
+    """Service: Configura las propiedades de movimiento 2D y cámara en BP_Player de forma segura."""
+    if not bp:
         return
 
-    root = scs.get_root_script_node()
-    if not root:
-        return
+    # 1. Intentar acceder al SCS si está expuesto en la API
+    try:
+        scs = getattr(bp, "simple_construction_script", None)
+        if scs and hasattr(scs, "get_root_script_node"):
+            root = scs.get_root_script_node()
+            if root:
+                # Nodo visual Flipbook
+                if hasattr(unreal, "PaperFlipbookComponent"):
+                    visual_node = scs.create_node(unreal.PaperFlipbookComponent, "Visual")
+                    if visual_node:
+                        scs.add_node(visual_node)
+                        visual_node.set_editor_property("parent", root)
 
-    # 1. Componente Visual PaperFlipbook
-    visual_node = scs.create_node(unreal.PaperFlipbookComponent, "Visual") if hasattr(unreal, "PaperFlipbookComponent") else None
-    if visual_node:
-        scs.add_node(visual_node)
-        visual_node.set_editor_property("parent", root)
-        visual = visual_node.get_editor_property("component_template")
+                # Nodo Cámara
+                camera_node = scs.create_node(unreal.CameraComponent, "TopDownCamera")
+                if camera_node:
+                    scs.add_node(camera_node)
+                    camera_node.set_editor_property("parent", root)
+    except Exception as e:
+        unreal.log_warning(f"[Service:BP_Placeholder] Nota en SCS BP_Player: {e}")
 
-        flipbook = unreal.EditorAssetLibrary.load_asset(m_bp_placeholder.FLIPBOOK_PATH)
-        if flipbook and visual:
-            try:
-                visual.set_editor_property("source_flipbook", flipbook)
-            except Exception:
-                pass
-        if visual:
-            visual.set_editor_property("relative_rotation", unreal.Rotator(90.0, 0.0, 0.0))
+    # 2. Configuración de movimiento 2D XY en el CDO de la clase generada
+    try:
+        generated_class = bp.generated_class()
+        if generated_class:
+            cdo = unreal.get_default_object(generated_class)
+            if hasattr(cdo, "get_editor_property"):
+                movement = cdo.get_editor_property("character_movement")
+                if movement:
+                    try:
+                        movement.set_editor_property("max_walk_speed", m_bp_placeholder.WALK_SPEED)
+                        movement.set_editor_property("constrain_to_plane", True)
+                        movement.set_editor_property("plane_constraint_normal", unreal.Vector(0.0, 0.0, 1.0))
+                        movement.set_editor_property("snap_to_plane_at_start", True)
+                        movement.set_editor_property("b_orient_rotation_to_movement", False)
+                    except Exception:
+                        pass
 
-    # 2. Componente de Cámara Ortográfica
-    camera_node = scs.create_node(unreal.CameraComponent, "TopDownCamera")
-    if camera_node:
-        scs.add_node(camera_node)
-        camera_node.set_editor_property("parent", root)
-        camera = camera_node.get_editor_property("component_template")
-
-        if camera:
-            camera.set_editor_property("projection_mode", unreal.CameraProjectionMode.ORTHOGRAPHIC)
-            camera.set_editor_property("ortho_width", m_bp_placeholder.CAMERA_ORTHO_WIDTH)
-            camera.set_editor_property("relative_location", unreal.Vector(0.0, 0.0, 1000.0))
-            camera.set_editor_property("relative_rotation", unreal.Rotator(-90.0, 0.0, 0.0))
-
-    # 3. Configuración de Movimiento 2D XY en CDO
-    generated_class = bp.generated_class()
-    if generated_class:
-        cdo = unreal.get_default_object(generated_class)
-        movement = cdo.get_editor_property("character_movement") if hasattr(cdo, "get_editor_property") else None
-
-        if movement:
-            try:
-                movement.set_editor_property("max_walk_speed", m_bp_placeholder.WALK_SPEED)
-                movement.set_editor_property("constrain_to_plane", True)
-                movement.set_editor_property("plane_constraint_normal", unreal.Vector(0.0, 0.0, 1.0))
-                movement.set_editor_property("snap_to_plane_at_start", True)
-                movement.set_editor_property("b_orient_rotation_to_movement", False)
-            except Exception:
-                pass
-
-        try:
-            cdo.set_editor_property("use_controller_rotation_yaw", False)
-        except Exception:
-            pass
+                try:
+                    cdo.set_editor_property("use_controller_rotation_yaw", False)
+                except Exception:
+                    pass
+    except Exception as e:
+        unreal.log_warning(f"[Service:BP_Placeholder] Nota en CDO BP_Player: {e}")
 
 def ensure_bp_placeholders():
     """Service: Garantiza la existencia física de BP_Player y Blueprints del juego configurados para 2D XY."""

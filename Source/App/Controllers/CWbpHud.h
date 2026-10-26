@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CWbpHud.generated.h"
 
-UCLASS()
-class APP_API CWbpHud : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCWbpHud : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCWbpHud();
-};
+	UCWbpHud();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCWbpHud(const FVector& TargetLocation);
+};

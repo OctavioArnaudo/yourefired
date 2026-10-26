@@ -1,19 +1,12 @@
-#include "CoworkerEnemy.h"
+﻿#include "CCoworkerEnemy.h"
 
-ACoworkerEnemy::ACoworkerEnemy()
+UCCoworkerEnemy::UCCoworkerEnemy()
+	: IdentifierName(TEXT("CCoworkerEnemy")), bIsActive(true)
 {
-	Health = 30.0f;
-	StressDamage = 8.0f;
-	AttackRange = 200.0f;
 }
 
-void ACoworkerEnemy::BeginPlay()
+bool UCCoworkerEnemy::ProcessCCoworkerEnemy(const FVector& TargetLocation)
 {
-	Super::BeginPlay();
-}
-
-void ACoworkerEnemy::StartGossipChatter()
-{
-	UE_LOG(LogTemp, Log, TEXT("Coworker traps player in useless workplace gossip, raising stress!"));
-	AttackPlayer();
+	UE_LOG(LogTemp, Log, TEXT("[UCCoworkerEnemy] Processing Controllers operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
+	return bIsActive;
 }

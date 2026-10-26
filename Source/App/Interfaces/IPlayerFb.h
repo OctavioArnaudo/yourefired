@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IPlayerFb.generated.h"
 
-UCLASS()
-class APP_API IPlayerFb : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIPlayerFb : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIPlayerFb();
-};
+	UIPlayerFb();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIPlayerFb(const FVector& TargetLocation);
+};

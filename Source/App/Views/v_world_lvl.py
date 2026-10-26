@@ -1,21 +1,13 @@
 # ============================================================
-# YOU'RE FIRED - View: World Levels Orchestrator
+# YOU'RE FIRED - View: Master World Levels Orchestrator
 # ============================================================
 import unreal
-import v_main_lvl
-import v_settings_lvl
-import v_pilot_lvl
-import v_victory_lvl
-import v_defeat_lvl
+import v_ui_lvl
+import v_game_lvl
 
 def generate_all_levels():
-    """View: Responsable exclusivo de coordinar la construcción de todos los niveles del juego."""
-    unreal.log("[View:WorldLevels] === INICIANDO CONSTRUCCION DE NIVELES ===")
-
-    v_main_lvl.build_main_level()
-    v_settings_lvl.build_settings_level()
-    v_pilot_lvl.build_pilot_level()
-    v_victory_lvl.build_victory_level()
-    v_defeat_lvl.build_defeat_level()
-
+    """View: Orquestador maestro ultra-ligero que delega la generación a v_ui_lvl y v_game_lvl."""
+    unreal.log("[View:WorldLevels] === INICIANDO CONSTRUCCION DE TODOS LOS NIVELES ===")
+    v_ui_lvl.generate_ui_levels()
+    v_game_lvl.generate_game_levels()
     unreal.log("[View:WorldLevels] === ¡TODOS LOS NIVELES CONSTRUIDOS EXITOSAMENTE! ===")

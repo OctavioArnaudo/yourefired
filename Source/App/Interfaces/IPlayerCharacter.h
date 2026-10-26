@@ -1,19 +1,23 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "UObject/NoExportTypes.h"
 #include "IPlayerCharacter.generated.h"
 
-UINTERFACE(MinimalAPI)
-class UIPlayerCharacter : public UInterface
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIPlayerCharacter : public UObject
 {
-\tGENERATED_BODY()
-};
-
-class IIPlayerCharacter
-{
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-};
+	UIPlayerCharacter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIPlayerCharacter(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IColor.generated.h"
 
-UCLASS()
-class APP_API IColor : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIColor : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIColor();
-};
+	UIColor();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIColor(const FVector& TargetLocation);
+};

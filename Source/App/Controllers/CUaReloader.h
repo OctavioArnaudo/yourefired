@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CUaReloader.generated.h"
 
-UCLASS()
-class APP_API CUaReloader : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCUaReloader : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCUaReloader();
-};
+	UCUaReloader();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCUaReloader(const FVector& TargetLocation);
+};

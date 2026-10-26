@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CLight.generated.h"
 
-UCLASS()
-class APP_API CLight : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCLight : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCLight();
-};
+	UCLight();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCLight(const FVector& TargetLocation);
+};

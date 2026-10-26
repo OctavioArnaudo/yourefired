@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VMPlaceholder.generated.h"
 
-UCLASS()
-class APP_API VMPlaceholder : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVMPlaceholder : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVMPlaceholder();
-};
+	UVMPlaceholder();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVMPlaceholder(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IUaReloader.generated.h"
 
-UCLASS()
-class APP_API IUaReloader : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIUaReloader : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIUaReloader();
-};
+	UIUaReloader();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIUaReloader(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VPlayerMovement.generated.h"
 
-UCLASS()
-class APP_API VPlayerMovement : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVPlayerMovement : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVPlayerMovement();
-};
+	UVPlayerMovement();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVPlayerMovement(const FVector& TargetLocation);
+};

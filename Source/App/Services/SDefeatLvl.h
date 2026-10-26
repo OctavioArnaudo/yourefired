@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SDefeatLvl.generated.h"
 
-UCLASS()
-class APP_API SDefeatLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USDefeatLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSDefeatLvl();
-};
+	USDefeatLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSDefeatLvl(const FVector& TargetLocation);
+};

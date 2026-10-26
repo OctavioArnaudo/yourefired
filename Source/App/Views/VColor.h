@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VColor.generated.h"
 
-UCLASS()
-class APP_API VColor : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVColor : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVColor();
-};
+	UVColor();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVColor(const FVector& TargetLocation);
+};

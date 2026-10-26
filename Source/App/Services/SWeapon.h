@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SWeapon.generated.h"
 
-UCLASS()
-class APP_API SWeapon : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USWeapon : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSWeapon();
-};
+	USWeapon();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSWeapon(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CUaLoader.generated.h"
 
-UCLASS()
-class APP_API CUaLoader : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCUaLoader : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCUaLoader();
-};
+	UCUaLoader();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCUaLoader(const FVector& TargetLocation);
+};

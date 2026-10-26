@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SLvl.generated.h"
 
-UCLASS()
-class APP_API SLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSLvl();
-};
+	USLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSLvl(const FVector& TargetLocation);
+};

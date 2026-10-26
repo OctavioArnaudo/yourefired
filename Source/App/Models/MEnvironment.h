@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MEnvironment.generated.h"
 
-UCLASS()
-class APP_API MEnvironment : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMEnvironment : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMEnvironment();
-};
+	UMEnvironment();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMEnvironment(const FVector& TargetLocation);
+};

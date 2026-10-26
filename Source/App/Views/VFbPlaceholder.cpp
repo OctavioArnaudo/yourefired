@@ -1,6 +1,12 @@
 ﻿#include "VFbPlaceholder.h"
 
-VFbPlaceholder::VFbPlaceholder()
+UVFbPlaceholder::UVFbPlaceholder()
+	: IdentifierName(TEXT("VFbPlaceholder")), bIsActive(true)
 {
 }
 
+bool UVFbPlaceholder::ProcessVFbPlaceholder(const FVector& TargetLocation)
+{
+	UE_LOG(LogTemp, Log, TEXT("[UVFbPlaceholder] Processing Views operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
+	return bIsActive;
+}

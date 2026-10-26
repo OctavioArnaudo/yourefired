@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "ILight.generated.h"
 
-UCLASS()
-class APP_API ILight : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UILight : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tILight();
-};
+	UILight();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessILight(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VSmSpawner.generated.h"
 
-UCLASS()
-class APP_API VSmSpawner : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVSmSpawner : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVSmSpawner();
-};
+	UVSmSpawner();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVSmSpawner(const FVector& TargetLocation);
+};

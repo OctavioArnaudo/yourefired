@@ -1,14 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "UObject/NoExportTypes.h"
 #include "CCoworkerEnemy.generated.h"
 
-UCLASS()
-class APP_API ACCoworkerEnemy : public ACharacter
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCCoworkerEnemy : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ACCoworkerEnemy();
+	UCCoworkerEnemy();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCCoworkerEnemy(const FVector& TargetLocation);
 };

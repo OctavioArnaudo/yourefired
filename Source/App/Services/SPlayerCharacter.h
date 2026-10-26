@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SPlayerCharacter.generated.h"
 
-UCLASS()
-class APP_API SPlayerCharacter : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USPlayerCharacter : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSPlayerCharacter();
-};
+	USPlayerCharacter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSPlayerCharacter(const FVector& TargetLocation);
+};

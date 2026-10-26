@@ -1,8 +1,15 @@
+﻿# ============================================================
+# YOU'RE FIRED - Model : Enemy
+# ============================================================
 import unreal
 
 class MEnemyData:
-    """Model data for Enemy entities."""
-    def __init__(self, damage=10.0, speed=300.0):
-        self.damage = damage
-        self.speed = speed
-        self.aggro_range = 500.0
+    """Model: Definición de datos, parámetros y estado para Enemy."""
+    def __init__(self, value=100.0, is_active=True):
+        self.domain_name = "enemy"
+        self.value = value
+        self.is_active = is_active
+        self.config_path = "/Game/YoureFired/Data/DT_Enemy"
+
+    def get_summary(self):
+        return f"Enemy State -> Active: {self.is_active}, Value: {self.value}"

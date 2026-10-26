@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SOfficeGm.generated.h"
 
-UCLASS()
-class APP_API SOfficeGm : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USOfficeGm : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSOfficeGm();
-};
+	USOfficeGm();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSOfficeGm(const FVector& TargetLocation);
+};

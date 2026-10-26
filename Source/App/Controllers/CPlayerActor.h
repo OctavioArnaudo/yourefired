@@ -1,14 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "UObject/NoExportTypes.h"
 #include "CPlayerActor.generated.h"
 
-UCLASS()
-class APP_API ACPlayerActor : public ACharacter
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCPlayerActor : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ACPlayerActor();
+	UCPlayerActor();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCPlayerActor(const FVector& TargetLocation);
 };

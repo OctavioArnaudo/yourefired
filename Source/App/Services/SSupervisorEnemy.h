@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SSupervisorEnemy.generated.h"
 
-UCLASS()
-class APP_API SSupervisorEnemy : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USSupervisorEnemy : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSSupervisorEnemy();
-};
+	USSupervisorEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSSupervisorEnemy(const FVector& TargetLocation);
+};

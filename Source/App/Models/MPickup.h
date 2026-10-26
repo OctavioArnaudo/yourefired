@@ -1,36 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "PickupBase.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MPickup.generated.h"
 
-class USphereComponent;
-class UStaticMeshComponent;
-
-/**
- * Base Interactable Pickup Actor
- */
-UCLASS()
-class YOUREFIRED_API APickupBase : public AActor
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMPickup : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	APickupBase();
+	UMPickup();
 
-protected:
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup | Components")
-	USphereComponent* CollisionComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup | Components")
-	UStaticMeshComponent* MeshComponent;
-
-	UFUNCTION()
-	virtual void OnOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-public:
-	UFUNCTION(BlueprintCallable, Category = "Pickup")
-	virtual void OnPickedUp(AActor* PickupInstigator);
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMPickup(const FVector& TargetLocation);
 };

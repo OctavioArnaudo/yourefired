@@ -1,14 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "UObject/NoExportTypes.h"
 #include "CPickup.generated.h"
 
-UCLASS()
-class APP_API ACPickup : public AActor
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCPickup : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ACPickup();
+	UCPickup();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCPickup(const FVector& TargetLocation);
 };

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SVictoryLvl.generated.h"
 
-UCLASS()
-class APP_API SVictoryLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USVictoryLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSVictoryLvl();
-};
+	USVictoryLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSVictoryLvl(const FVector& TargetLocation);
+};

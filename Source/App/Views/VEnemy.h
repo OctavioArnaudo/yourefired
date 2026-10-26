@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VEnemy.generated.h"
 
-UCLASS()
-class APP_API VEnemy : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVEnemy : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVEnemy();
-};
+	UVEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVEnemy(const FVector& TargetLocation);
+};

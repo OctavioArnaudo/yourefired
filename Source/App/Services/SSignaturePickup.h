@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SSignaturePickup.generated.h"
 
-UCLASS()
-class APP_API SSignaturePickup : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USSignaturePickup : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSSignaturePickup();
-};
+	USSignaturePickup();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSSignaturePickup(const FVector& TargetLocation);
+};

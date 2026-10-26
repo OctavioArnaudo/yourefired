@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VLight.generated.h"
 
-UCLASS()
-class APP_API VLight : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVLight : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVLight();
-};
+	UVLight();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVLight(const FVector& TargetLocation);
+};

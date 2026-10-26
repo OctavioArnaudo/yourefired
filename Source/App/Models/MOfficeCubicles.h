@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MOfficeCubicles.generated.h"
 
-UCLASS()
-class APP_API MOfficeCubicles : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMOfficeCubicles : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMOfficeCubicles();
-};
+	UMOfficeCubicles();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMOfficeCubicles(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SMPlaceholder.generated.h"
 
-UCLASS()
-class APP_API SMPlaceholder : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USMPlaceholder : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSMPlaceholder();
-};
+	USMPlaceholder();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSMPlaceholder(const FVector& TargetLocation);
+};

@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CWbpPlaceholder.generated.h"
 
-UCLASS()
-class APP_API CWbpPlaceholder : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCWbpPlaceholder : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCWbpPlaceholder();
-};
+	UCWbpPlaceholder();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCWbpPlaceholder(const FVector& TargetLocation);
+};

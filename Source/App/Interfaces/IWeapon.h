@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "IWeapon.generated.h"
 
-UCLASS()
-class APP_API IWeapon : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UIWeapon : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tIWeapon();
-};
+	UIWeapon();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessIWeapon(const FVector& TargetLocation);
+};

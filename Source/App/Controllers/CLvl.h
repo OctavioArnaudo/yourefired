@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "CLvl.generated.h"
 
-UCLASS()
-class APP_API CLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UCLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tCLvl();
-};
+	UCLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	bool ProcessCLvl(const FVector& TargetLocation);
+};

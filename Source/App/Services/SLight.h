@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SLight.generated.h"
 
-UCLASS()
-class APP_API SLight : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USLight : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSLight();
-};
+	USLight();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSLight(const FVector& TargetLocation);
+};

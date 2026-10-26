@@ -1,27 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "EnemyBase.h"
-#include "SupervisorEnemy.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MSupervisorEnemy.generated.h"
 
-/**
- * Supervisor Enemy - Patrols floor, attacks with judging stares and performance reviews.
- */
-UCLASS()
-class YOUREFIRED_API ASupervisorEnemy : public AEnemyBase
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMSupervisorEnemy : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ASupervisorEnemy();
+	UMSupervisorEnemy();
 
-protected:
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
 
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Supervisor Stats")
-	float JudgingStareDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
 
-	UFUNCTION(BlueprintCallable, Category = "Supervisor Actions")
-	void PerformJudgingStare();
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMSupervisorEnemy(const FVector& TargetLocation);
 };

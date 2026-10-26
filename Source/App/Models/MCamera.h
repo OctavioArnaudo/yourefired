@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MCamera.generated.h"
 
-UCLASS()
-class APP_API MCamera : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMCamera : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMCamera();
-};
+	UMCamera();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMCamera(const FVector& TargetLocation);
+};

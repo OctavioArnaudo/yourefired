@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "ILvl.generated.h"
 
-UCLASS()
-class APP_API ILvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UILvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tILvl();
-};
+	UILvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessILvl(const FVector& TargetLocation);
+};

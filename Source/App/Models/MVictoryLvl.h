@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MVictoryLvl.generated.h"
 
-UCLASS()
-class APP_API MVictoryLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMVictoryLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMVictoryLvl();
-};
+	UMVictoryLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMVictoryLvl(const FVector& TargetLocation);
+};

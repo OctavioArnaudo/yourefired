@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "MPilotLvl.generated.h"
 
-UCLASS()
-class APP_API MPilotLvl : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMPilotLvl : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tMPilotLvl();
-};
+	UMPilotLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMPilotLvl(const FVector& TargetLocation);
+};

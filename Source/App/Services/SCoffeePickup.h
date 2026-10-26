@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SCoffeePickup.generated.h"
 
-UCLASS()
-class APP_API SCoffeePickup : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USCoffeePickup : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSCoffeePickup();
-};
+	USCoffeePickup();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSCoffeePickup(const FVector& TargetLocation);
+};

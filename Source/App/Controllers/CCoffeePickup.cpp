@@ -1,18 +1,12 @@
-#include "CoffeePickup.h"
-#include "WorkerCharacter.h"
+﻿#include "CCoffeePickup.h"
 
-ACoffeePickup::ACoffeePickup()
+UCCoffeePickup::UCCoffeePickup()
+	: IdentifierName(TEXT("CCoffeePickup")), bIsActive(true)
 {
-	StressReductionAmount = 25.0f;
 }
 
-void ACoffeePickup::OnPickedUp(AActor* PickupInstigator)
+bool UCCoffeePickup::ProcessCCoffeePickup(const FVector& TargetLocation)
 {
-	AWorkerCharacter* Worker = Cast<AWorkerCharacter>(PickupInstigator);
-	if (Worker)
-	{
-		Worker->AddCoffee(1);
-		UE_LOG(LogTemp, Log, TEXT("Coffee picked up! Added to worker inventory."));
-		Destroy();
-	}
+	UE_LOG(LogTemp, Log, TEXT("[UCCoffeePickup] Processing Controllers operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
+	return bIsActive;
 }

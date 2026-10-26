@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SFbPlaceholder.generated.h"
 
-UCLASS()
-class APP_API SFbPlaceholder : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USFbPlaceholder : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSFbPlaceholder();
-};
+	USFbPlaceholder();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSFbPlaceholder(const FVector& TargetLocation);
+};

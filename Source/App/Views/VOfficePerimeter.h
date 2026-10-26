@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VOfficePerimeter.generated.h"
 
-UCLASS()
-class APP_API VOfficePerimeter : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVOfficePerimeter : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVOfficePerimeter();
-};
+	UVOfficePerimeter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVOfficePerimeter(const FVector& TargetLocation);
+};

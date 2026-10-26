@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VCoworkerEnemy.generated.h"
 
-UCLASS()
-class APP_API VCoworkerEnemy : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVCoworkerEnemy : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVCoworkerEnemy();
-};
+	UVCoworkerEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVCoworkerEnemy(const FVector& TargetLocation);
+};

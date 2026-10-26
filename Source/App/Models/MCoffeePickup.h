@@ -1,22 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "PickupBase.h"
-#include "CoffeePickup.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MCoffeePickup.generated.h"
 
-/**
- * Coffee Pickup - Decreases worker stress or stores coffee in inventory.
- */
-UCLASS()
-class YOUREFIRED_API ACoffeePickup : public APickupBase
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMCoffeePickup : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	ACoffeePickup();
+	UMCoffeePickup();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Coffee")
-	float StressReductionAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
 
-	virtual void OnPickedUp(AActor* PickupInstigator) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMCoffeePickup(const FVector& TargetLocation);
 };

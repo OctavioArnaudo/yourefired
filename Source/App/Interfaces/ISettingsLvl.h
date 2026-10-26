@@ -1,19 +1,23 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "UObject/NoExportTypes.h"
 #include "ISettingsLvl.generated.h"
 
-UINTERFACE(MinimalAPI)
-class UISettingsLvl : public UInterface
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UISettingsLvl : public UObject
 {
-\tGENERATED_BODY()
-};
-
-class IISettingsLvl
-{
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-};
+	UISettingsLvl();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessISettingsLvl(const FVector& TargetLocation);
+};

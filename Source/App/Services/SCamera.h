@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SCamera.generated.h"
 
-UCLASS()
-class APP_API SCamera : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USCamera : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSCamera();
-};
+	USCamera();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSCamera(const FVector& TargetLocation);
+};

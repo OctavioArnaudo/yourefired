@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VDoor.generated.h"
 
-UCLASS()
-class APP_API VDoor : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVDoor : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVDoor();
-};
+	UVDoor();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVDoor(const FVector& TargetLocation);
+};

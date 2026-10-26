@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SAiPatrol.generated.h"
 
-UCLASS()
-class APP_API SAiPatrol : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USAiPatrol : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSAiPatrol();
-};
+	USAiPatrol();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSAiPatrol(const FVector& TargetLocation);
+};

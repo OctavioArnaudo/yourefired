@@ -1,43 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "EnemyBase.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MEnemy.generated.h"
 
-/**
- * Base class for all office enemies (Coworkers, Supervisors, HR agents).
- */
-UCLASS()
-class YOUREFIRED_API AEnemyBase : public ACharacter
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMEnemy : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	AEnemyBase();
+	UMEnemy();
 
-protected:
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
 
-public:
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
 
-	/** Enemy Health / Distraction threshold */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
-	float Health;
-
-	/** Stress damage dealt to player when attacking */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
-	float StressDamage;
-
-	/** Attack range */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Stats")
-	float AttackRange;
-
-	/** Take damage / distraction */
-	UFUNCTION(BlueprintCallable, Category = "Enemy Actions")
-	virtual void TakeDamageCustom(float DamageAmount);
-
-	/** Attack player */
-	UFUNCTION(BlueprintCallable, Category = "Enemy Actions")
-	virtual void AttackPlayer();
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMEnemy(const FVector& TargetLocation);
 };

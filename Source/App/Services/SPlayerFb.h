@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SPlayerFb.generated.h"
 
-UCLASS()
-class APP_API SPlayerFb : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USPlayerFb : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSPlayerFb();
-};
+	USPlayerFb();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSPlayerFb(const FVector& TargetLocation);
+};

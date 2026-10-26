@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VPickup.generated.h"
 
-UCLASS()
-class APP_API VPickup : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVPickup : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVPickup();
-};
+	UVPickup();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVPickup(const FVector& TargetLocation);
+};

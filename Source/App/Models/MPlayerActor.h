@@ -1,29 +1,23 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "HybridPlayerModel.generated.h"
+#include "UObject/NoExportTypes.h"
+#include "MPlayerActor.generated.h"
 
-/**
- * Model for Hybrid Player (Combines melee, range, and inventory states)
- */
-UCLASS()
-class YOUREFIRED_API AHybridPlayerModel : public ACharacter
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UMPlayerActor : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	AHybridPlayerModel();
+	UMPlayerActor();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Stats")
-	float StressLevel;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	FString IdentifierName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Stats")
-	float MaxStress;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	bool bIsActive;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Stats")
-	float WalkSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player | Stats")
-	float RunSpeed;
+	UFUNCTION(BlueprintCallable, Category = "Models")
+	bool ProcessMPlayerActor(const FVector& TargetLocation);
 };

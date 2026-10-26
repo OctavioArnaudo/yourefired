@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "SEnvironment.generated.h"
 
-UCLASS()
-class APP_API SEnvironment : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API USEnvironment : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tSEnvironment();
-};
+	USEnvironment();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool ProcessSEnvironment(const FVector& TargetLocation);
+};

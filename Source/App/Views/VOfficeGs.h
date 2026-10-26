@@ -4,12 +4,20 @@
 #include "UObject/NoExportTypes.h"
 #include "VOfficeGs.generated.h"
 
-UCLASS()
-class APP_API VOfficeGs : public UObject
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UVOfficeGs : public UObject
 {
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-\tVOfficeGs();
-};
+	UVOfficeGs();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Views")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Views")
+	bool ProcessVOfficeGs(const FVector& TargetLocation);
+};

@@ -1,19 +1,23 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "UObject/NoExportTypes.h"
 #include "ISupervisorEnemy.generated.h"
 
-UINTERFACE(MinimalAPI)
-class UISupervisorEnemy : public UInterface
+UCLASS(BlueprintType, Blueprintable)
+class APP_API UISupervisorEnemy : public UObject
 {
-\tGENERATED_BODY()
-};
-
-class IISupervisorEnemy
-{
-\tGENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-};
+	UISupervisorEnemy();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	FString IdentifierName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interfaces")
+	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Interfaces")
+	bool ProcessISupervisorEnemy(const FVector& TargetLocation);
+};

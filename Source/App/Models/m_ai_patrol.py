@@ -1,20 +1,15 @@
-# ============================================================
-# YOU'RE FIRED - Model: AI Patrol Waypoint Data Model
+﻿# ============================================================
+# YOU'RE FIRED - Model : AiPatrol
 # ============================================================
 import unreal
 
-PATROL_ROUTES = {
-    "Coworker_Cubicle_Patrol": [
-        (-800, 300, 75), (-800, -300, 75), (0, 700, 75), (800, 300, 75)
-    ],
-    "Supervisor_Executive_Patrol": [
-        (-400, -100, 75), (400, 100, 75), (0, 1200, 75), (0, -1000, 75)
-    ],
-    "Office_Main_Patrol": [
-        (-1000, 1000, 75), (1000, 1000, 75), (1000, -1000, 75), (-1000, -1000, 75)
-    ]
-}
+class MAiPatrolData:
+    """Model: Definición de datos, parámetros y estado para AiPatrol."""
+    def __init__(self, value=100.0, is_active=True):
+        self.domain_name = "ai_patrol"
+        self.value = value
+        self.is_active = is_active
+        self.config_path = "/Game/YoureFired/Data/DT_AiPatrol"
 
-def get_patrol_waypoints(route_name):
-    """Model: Retorna las coordenadas de waypoints para una ruta específica."""
-    return PATROL_ROUTES.get(route_name, PATROL_ROUTES["Office_Main_Patrol"])
+    def get_summary(self):
+        return f"AiPatrol State -> Active: {self.is_active}, Value: {self.value}"
