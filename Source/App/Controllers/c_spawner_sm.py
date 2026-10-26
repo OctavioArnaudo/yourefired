@@ -11,7 +11,7 @@ services_dir = os.path.join(app_dir, 'Services')
 if services_dir not in sys.path:
     sys.path.append(services_dir)
 
-import s_asset_loader
+import s_ua_loader
 import s_asset_normalizer
 import s_color
 
@@ -26,7 +26,7 @@ def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None
     asset_name = s_asset_normalizer.get_normalized_asset_name(name)
     custom_mesh_path = f"/Game/YoureFired/Meshes/{asset_name}.{asset_name}"
 
-    mesh = s_asset_loader.get_asset_with_fallback(custom_mesh_path, default_mesh_path)
+    mesh = s_ua_loader.get_asset_with_fallback(custom_mesh_path, default_mesh_path)
     if not mesh:
         unreal.log_error("No se pudo cargar mesh para: " + name)
         return None
@@ -37,7 +37,7 @@ def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None
         actor.set_actor_scale3d(unreal.Vector(*scale))
         actor.static_mesh_component.set_static_mesh(mesh)
 
-        mat = s_asset_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
+        mat = s_ua_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
         if mat:
             actor.static_mesh_component.set_material(0, mat)
 
