@@ -15,8 +15,7 @@ import s_ua_loader
 import s_ua_normalizer
 import s_color
 
-DEFAULT_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_PrototypeGrid"
-CUSTOM_MAT_PATH = "/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle"
+DEFAULT_MAT_PATH = "/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"
 
 def get_actor_by_label(label):
     """Encuentra un actor existente en el nivel activo por su etiqueta para evitar duplicados."""
@@ -26,25 +25,27 @@ def get_actor_by_label(label):
     return None
 
 def apply_color_to_mesh_actor(actor, name):
-    """Component: Crea y asigna un Dynamic Material Instance con la paleta de colores de s_color."""
+    """Component: Aplica colores ultra-vívidos y satura parámetros de iluminación en el material."""
     if not actor or not hasattr(actor, "static_mesh_component") or not actor.static_mesh_component:
         return
 
-    mat = s_ua_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
+    # Asignar material base de motor con soporte de color
+    mat = s_ua_loader.get_asset_with_fallback("/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle", DEFAULT_MAT_PATH)
     if mat:
         actor.static_mesh_component.set_material(0, mat)
 
     dyn_mat = actor.static_mesh_component.create_and_set_material_instance_dynamic(0)
     if dyn_mat:
         color = s_color.get_color_for_name(name)
-        for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo", "Grid Color", "GridColor"]:
+        # Aplicar color a todos los posibles parámetros vectoriales del shader
+        for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo", "Grid Color", "GridColor", "EmissiveColor", "Emissive Color", "Emissive"]:
             try:
                 dyn_mat.set_vector_parameter_value(param, color)
             except Exception:
                 pass
 
 def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None):
-    """Component: Reutiliza o spawnea un StaticMeshActor homónimo actualizando sus propiedades sin duplicados."""
+    """Component: Reutiliza o spawnea un StaticMeshActor homónimo aplicando colores vívidos obligatorios."""
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
 

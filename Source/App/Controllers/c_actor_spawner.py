@@ -23,7 +23,7 @@ def get_actor_by_label(label):
     return None
 
 def apply_color_to_actor_components(actor, name):
-    """Component: Aplica material y color dinámico desde s_color a los componentes visuales de un Actor/Character."""
+    """Component: Aplica colores vívidos obligatorios a componentes de personajes y actores."""
     if not actor:
         return
 
@@ -36,7 +36,7 @@ def apply_color_to_actor_components(actor, name):
             actor.mesh.set_material(0, mat)
         dyn_mat = actor.mesh.create_and_set_material_instance_dynamic(0)
         if dyn_mat:
-            for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo"]:
+            for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo", "EmissiveColor", "Emissive"]:
                 try:
                     dyn_mat.set_vector_parameter_value(param, color)
                 except Exception:
@@ -48,7 +48,7 @@ def apply_color_to_actor_components(actor, name):
             actor.static_mesh_component.set_material(0, mat)
         dyn_mat = actor.static_mesh_component.create_and_set_material_instance_dynamic(0)
         if dyn_mat:
-            for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo"]:
+            for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo", "EmissiveColor", "Emissive"]:
                 try:
                     dyn_mat.set_vector_parameter_value(param, color)
                 except Exception:
@@ -85,7 +85,7 @@ def spawn_actor(name, class_path, position, rotation=None):
             except Exception:
                 pass
 
-    # 4. Si no existe, normalizar el nombre (removiendo prefijo SM_) y verificar silenciadamente el BP base
+    # 4. Si no existe, normalizar el nombre y verificar silenciadamente si el BP existe en disco
     if not actor_class:
         base_name = s_ua_normalizer.get_normalized_asset_name(name)
         bp_name = base_name[3:] if base_name.startswith("SM_") else base_name

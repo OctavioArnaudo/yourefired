@@ -1,5 +1,5 @@
 # ============================================================
-# YOU'RE FIRED - View: Office Cubicles & Furniture Layout
+# YOU'RE FIRED - View: 2D Office Cubicles & Furniture
 # ============================================================
 import unreal
 import c_sm_spawner as c_mesh_spawner
@@ -8,8 +8,8 @@ CUBE_PATH = "/Engine/BasicShapes/Cube.Cube"
 CYLINDER_PATH = "/Engine/BasicShapes/Cylinder.Cylinder"
 
 def build_office_cubicles(positions=None):
-    """View: Construye exclusivamente el mobiliario y cubículos de la oficina."""
-    unreal.log("[View:OfficeCubicles] Construyendo cubículos y escritorios...")
+    """View: Construye los cubículos y escritorios 2D en el plano XY."""
+    unreal.log("[View:OfficeCubicles] Construyendo cubículos y escritorios 2D XY...")
     if positions is None:
         positions = [
             (-800, 600, 0),  (800, 600, 0),
@@ -19,5 +19,5 @@ def build_office_cubicles(positions=None):
         ]
     for idx, pos in enumerate(positions):
         cx, cy, cz = pos
-        c_mesh_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Desk", CUBE_PATH, (cx, cy, cz + 30), (2.0, 1.0, 0.6))
-        c_mesh_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Chair", CYLINDER_PATH, (cx, cy - 60, cz + 30), (0.4, 0.4, 0.6))
+        c_mesh_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Desk", CUBE_PATH, (cx, cy, 0), (2.0, 1.0, 0.2))
+        c_mesh_spawner.spawn_mesh(f"Cubicle_{idx+1:02d}_Chair", CYLINDER_PATH, (cx, cy - 60, 0), (0.4, 0.4, 0.2))
