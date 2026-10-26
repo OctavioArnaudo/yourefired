@@ -1,8 +1,9 @@
 # ============================================================
-# YOU'RE FIRED - Service: Paper2D Flipbook Placeholder (FB_)
+# YOU'RE FIRED - Service: Paper2D Flipbook Placeholder Orchestrator
 # ============================================================
 import unreal
 import os
+import s_fb_builder
 
 FLIPBOOK_DEFINITIONS = [
     ("/Game/YoureFired/Flipbooks/FB_Player_Idle", 12.0),
@@ -14,8 +15,14 @@ FLIPBOOK_DEFINITIONS = [
 ]
 
 def ensure_fb_placeholders():
-    """Service: Garantiza la existencia física de todos los Paper2D Flipbooks (FB_) del juego 2D."""
-    unreal.log("[Service:FB_Placeholder] Verificando Paper2D Flipbooks 2D (FB_)...")
+    """Service: Orquestador ligero de Flipbooks 2D que delega en s_fb_builder."""
+    unreal.log("[Service:FB_Placeholder] Verificando e importando secuencias PNG para Paper2D Flipbooks (FB_)...")
+
+    # 1. Delegar construcción dinámica desde PNG a s_fb_builder
+    s_fb_builder.build_flipbook_from_png_sequence("/Game/YoureFired/Textures/Player_Idle", "/Game/YoureFired/Flipbooks", "FB_Player_Idle", 12.0)
+    s_fb_builder.build_flipbook_from_png_sequence("/Game/YoureFired/Textures/Player_Walk", "/Game/YoureFired/Flipbooks", "FB_Player_Walk", 15.0)
+
+    # 2. Generar plantillas base .uasset si no hay secuencias .png presentes aún
     content_dir = unreal.Paths.project_content_dir()
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 
