@@ -14,10 +14,13 @@ COLOR_PALETTE = {
     "Coffee": unreal.LinearColor(0.6, 0.35, 0.15, 1.0),
     "Signature": unreal.LinearColor(0.95, 0.85, 0.1, 1.0),
     "Door": unreal.LinearColor(0.1, 0.7, 0.6, 1.0),
-    "UI_Backdrop": unreal.LinearColor(0.1, 0.35, 0.75, 1.0),
+    "UI_Backdrop": unreal.LinearColor(0.08, 0.3, 0.65, 1.0),
     "UI_Button_Start": unreal.LinearColor(0.1, 0.85, 0.3, 1.0),
     "UI_Button_Settings": unreal.LinearColor(0.95, 0.8, 0.1, 1.0),
     "UI_Button_Quit": unreal.LinearColor(0.9, 0.25, 0.25, 1.0),
+    "UI_Button_Volume": unreal.LinearColor(0.95, 0.8, 0.1, 1.0),
+    "UI_Button_Back": unreal.LinearColor(0.9, 0.25, 0.25, 1.0),
+    "UI_Button_Restart": unreal.LinearColor(0.1, 0.85, 0.3, 1.0),
     "UI_Button": unreal.LinearColor(0.2, 0.7, 0.9, 1.0),
     "UI": unreal.LinearColor(0.2, 0.6, 0.8, 1.0)
 }
