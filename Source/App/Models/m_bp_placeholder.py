@@ -1,7 +1,14 @@
 ﻿# ============================================================
-# YOU'RE FIRED - Model: Blueprint Placeholder Data Model
+# YOU'RE FIRED - Model: Blueprint Player Configuration Data
 # ============================================================
 import unreal
+
+OUTPUT_PATH = "/Game/YoureFired/Blueprints"
+BLUEPRINT_NAME = "BP_Player"
+FLIPBOOK_PATH = "/Game/YoureFired/Flipbooks/FB_Player_Idle"
+
+WALK_SPEED = 300.0
+CAMERA_ORTHO_WIDTH = 1200.0
 
 class MBPPlaceholderData:
     """Model: Representa los metadatos y configuración de un Blueprint Placeholder."""

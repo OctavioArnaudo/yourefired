@@ -1,26 +1,86 @@
 # ============================================================
-# YOU'RE FIRED - Service: Blueprint Placeholder (BP_)
+# YOU'RE FIRED - Service: Paper2D BP_Player & Blueprint Generator
 # ============================================================
 import unreal
 import os
+import m_bp_placeholder
 
-BLUEPRINT_DEFINITIONS = [
-    ("/Game/YoureFired/Blueprints/BP_Player", unreal.Character, ["CPlayerCharacter", "CPlayerActor", "PlayerCharacter"]),
-    ("/Game/YoureFired/Blueprints/BP_CoworkerEnemy", unreal.Character, ["CCoworkerEnemy", "CoworkerEnemy"]),
-    ("/Game/YoureFired/Blueprints/BP_SupervisorEnemy", unreal.Character, ["CSupervisorEnemy", "SupervisorEnemy"]),
-    ("/Game/YoureFired/Blueprints/BP_CoffeeItem", unreal.Actor, ["CCoffeePickup", "CoffeePickup"]),
-    ("/Game/YoureFired/Blueprints/BP_SignatureItem", unreal.Actor, ["CSignaturePickup", "SignaturePickup"]),
-    ("/Game/YoureFired/Blueprints/BP_OfficeDoor", unreal.Actor, ["CDoor", "OfficeDoor"]),
-    ("/Game/YoureFired/Blueprints/BP_WeaponBase", unreal.Actor, ["CWeapon", "WeaponBase"])
-]
+def setup_bp_player_components(bp):
+    """Service: Configura SCS (Simple Construction Script) de BP_Player con PaperFlipbookComponent y Orthographic Camera."""
+    scs = bp.get_editor_property("simple_construction_script")
+    if not scs:
+        return
+
+    root = scs.get_root_script_node()
+    if not root:
+        return
+
+    # 1. Componente Visual PaperFlipbook
+    visual_node = scs.create_node(unreal.PaperFlipbookComponent, "Visual") if hasattr(unreal, "PaperFlipbookComponent") else None
+    if visual_node:
+        scs.add_node(visual_node)
+        visual_node.set_editor_property("parent", root)
+        visual = visual_node.get_editor_property("component_template")
+
+        flipbook = unreal.EditorAssetLibrary.load_asset(m_bp_placeholder.FLIPBOOK_PATH)
+        if flipbook and visual:
+            try:
+                visual.set_editor_property("source_flipbook", flipbook)
+            except Exception:
+                pass
+        if visual:
+            visual.set_editor_property("relative_rotation", unreal.Rotator(90.0, 0.0, 0.0))
+
+    # 2. Componente de Cámara Ortográfica
+    camera_node = scs.create_node(unreal.CameraComponent, "TopDownCamera")
+    if camera_node:
+        scs.add_node(camera_node)
+        camera_node.set_editor_property("parent", root)
+        camera = camera_node.get_editor_property("component_template")
+
+        if camera:
+            camera.set_editor_property("projection_mode", unreal.CameraProjectionMode.ORTHOGRAPHIC)
+            camera.set_editor_property("ortho_width", m_bp_placeholder.CAMERA_ORTHO_WIDTH)
+            camera.set_editor_property("relative_location", unreal.Vector(0.0, 0.0, 1000.0))
+            camera.set_editor_property("relative_rotation", unreal.Rotator(-90.0, 0.0, 0.0))
+
+    # 3. Configuración de Movimiento 2D XY en CDO
+    generated_class = bp.generated_class()
+    if generated_class:
+        cdo = unreal.get_default_object(generated_class)
+        movement = cdo.get_editor_property("character_movement") if hasattr(cdo, "get_editor_property") else None
+
+        if movement:
+            try:
+                movement.set_editor_property("max_walk_speed", m_bp_placeholder.WALK_SPEED)
+                movement.set_editor_property("constrain_to_plane", True)
+                movement.set_editor_property("plane_constraint_normal", unreal.Vector(0.0, 0.0, 1.0))
+                movement.set_editor_property("snap_to_plane_at_start", True)
+                movement.set_editor_property("b_orient_rotation_to_movement", False)
+            except Exception:
+                pass
+
+        try:
+            cdo.set_editor_property("use_controller_rotation_yaw", False)
+        except Exception:
+            pass
 
 def ensure_bp_placeholders():
-    """Service: Garantiza la existencia física de todos los Blueprints lógicos del juego con clases padre apropiadas sin advertencias."""
-    unreal.log("[Service:BP_Placeholder] Verificando Blueprints lógicos (BP_)...")
+    """Service: Garantiza la existencia física de BP_Player y Blueprints del juego configurados para 2D XY."""
+    unreal.log("[Service:BP_Placeholder] Verificando y configurando BP_Player y Blueprints 2D (BP_)...")
     content_dir = unreal.Paths.project_content_dir()
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 
-    for bp_path, default_parent, cpp_class_names in BLUEPRINT_DEFINITIONS:
+    blueprints = [
+        ("/Game/YoureFired/Blueprints/BP_Player", unreal.Character, "/Script/App.CPlayerCharacter"),
+        ("/Game/YoureFired/Blueprints/BP_CoworkerEnemy", unreal.Character, "/Script/App.CCoworkerEnemy"),
+        ("/Game/YoureFired/Blueprints/BP_SupervisorEnemy", unreal.Character, "/Script/App.CSupervisorEnemy"),
+        ("/Game/YoureFired/Blueprints/BP_CoffeeItem", unreal.Actor, "/Script/App.CCoffeePickup"),
+        ("/Game/YoureFired/Blueprints/BP_SignatureItem", unreal.Actor, "/Script/App.CSignaturePickup"),
+        ("/Game/YoureFired/Blueprints/BP_OfficeDoor", unreal.Actor, "/Script/App.CDoor")
+    ]
+
+    for bp_path, default_parent, cpp_class_path in blueprints:
         relative_path = bp_path.replace("/Game/", "") + ".uasset"
         disk_path = os.path.join(content_dir, relative_path)
 
@@ -33,18 +93,22 @@ def ensure_bp_placeholders():
 
             try:
                 parent_class = default_parent
-                for name in cpp_class_names:
-                    cls = getattr(unreal, name, None)
-                    if cls:
-                        parent_class = cls
-                        break
+                if cpp_class_path:
+                    cls_name = cpp_class_path.split('.')[-1]
+                    cpp_cls = getattr(unreal, cls_name, None)
+                    if cpp_cls:
+                        parent_class = cpp_cls
 
                 factory = unreal.BlueprintFactory()
                 factory.set_editor_property("parent_class", parent_class)
 
-                new_bp = asset_tools.create_asset(asset_name, package_path, unreal.Blueprint, factory)
-                if new_bp:
-                    unreal.EditorAssetLibrary.save_loaded_asset(new_bp)
-                    unreal.log(f"[Service:BP_Placeholder] Creado Blueprint '{asset_name}' en: {disk_path}")
+                bp = asset_tools.create_asset(asset_name, package_path, unreal.Blueprint, factory)
+                if bp:
+                    if asset_name == "BP_Player":
+                        setup_bp_player_components(bp)
+
+                    unreal.BlueprintEditorLibrary.compile_blueprint(bp)
+                    unreal.EditorAssetLibrary.save_loaded_asset(bp)
+                    unreal.log(f"[Service:BP_Placeholder] Creado y configurado BP '{asset_name}' en 2D XY.")
             except Exception as e:
-                unreal.log_error(f"[Service:BP_Placeholder] Error creando Blueprint '{bp_path}': {e}")
+                unreal.log_error(f"[Service:BP_Placeholder] Error en {bp_path}: {e}")
