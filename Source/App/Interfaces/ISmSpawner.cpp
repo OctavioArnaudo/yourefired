@@ -1,0 +1,6 @@
+﻿#include ""
+
+ISmSpawner::ISmSpawner()
+{
+}
+

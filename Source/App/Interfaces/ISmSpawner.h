@@ -2,14 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "VSpawnerSm.generated.h"
+#include "ISmSpawner.generated.h"
 
 UCLASS()
-class APP_API VSpawnerSm : public UObject
+class APP_API ISmSpawner : public UObject
 {
 \tGENERATED_BODY()
 
 public:
-\tVSpawnerSm();
+\tISmSpawner();
 };
 

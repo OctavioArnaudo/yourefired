@@ -1,5 +1,5 @@
 ﻿# ============================================================
-# YOU'RE FIRED - Views : SpawnerSm
+# YOU'RE FIRED - Services : SmSpawner
 # ============================================================
 import unreal
 

@@ -1,5 +1,5 @@
 ﻿# ============================================================
-# YOU'RE FIRED - Interfaces : SpawnerSm
+# YOU'RE FIRED - Interfaces : SmSpawner
 # ============================================================
 import unreal
 
