@@ -1,5 +1,6 @@
-#include "CWeapon.h"
+﻿#include "CWeapon.h"
 
-ACWeapon::ACWeapon()
+CWeapon::CWeapon()
 {
 }
+

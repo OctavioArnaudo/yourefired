@@ -1,5 +1,6 @@
-#include "MWeapon.h"
+﻿#include "MWeapon.h"
 
-UMWeapon::UMWeapon()
+MWeapon::MWeapon()
 {
 }
+

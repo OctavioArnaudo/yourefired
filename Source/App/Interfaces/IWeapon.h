@@ -1,19 +1,15 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "UObject/NoExportTypes.h"
 #include "IWeapon.generated.h"
 
-UINTERFACE(MinimalAPI)
-class UIWeapon : public UInterface
-{
-\tGENERATED_BODY()
-};
-
-class IIWeapon
+UCLASS()
+class APP_API IWeapon : public UObject
 {
 \tGENERATED_BODY()
 
 public:
+\tIWeapon();
 };
 

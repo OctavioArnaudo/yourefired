@@ -1,14 +1,15 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "VWeapon.generated.h"
 
 UCLASS()
-class APP_API UVWeapon : public UObject
+class APP_API VWeapon : public UObject
 {
-	GENERATED_BODY()
+\tGENERATED_BODY()
 
 public:
-	UVWeapon();
+\tVWeapon();
 };
+

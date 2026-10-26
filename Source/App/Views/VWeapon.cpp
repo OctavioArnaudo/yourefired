@@ -1,5 +1,6 @@
-#include "VWeapon.h"
+﻿#include "VWeapon.h"
 
-UVWeapon::UVWeapon()
+VWeapon::VWeapon()
 {
 }
+

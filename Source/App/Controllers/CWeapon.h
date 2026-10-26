@@ -1,14 +1,15 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "UObject/NoExportTypes.h"
 #include "CWeapon.generated.h"
 
 UCLASS()
-class APP_API ACWeapon : public AActor
+class APP_API CWeapon : public UObject
 {
-	GENERATED_BODY()
+\tGENERATED_BODY()
 
 public:
-	ACWeapon();
+\tCWeapon();
 };
+
