@@ -56,8 +56,12 @@ def build_office_layout():
 
     dir_light = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.DirectionalLight, unreal.Vector(0, 0, 1000), unreal.Rotator(-50, -30, 0))
     if dir_light:
+        if hasattr(dir_light, "root_component") and dir_light.root_component:
+            dir_light.root_component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
         dir_light.light_component.set_editor_property("intensity", 10.0)
 
     skylight = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.SkyLight, unreal.Vector(0, 0, 500), unreal.Rotator(0, 0, 0))
     if skylight:
+        if hasattr(skylight, "root_component") and skylight.root_component:
+            skylight.root_component.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
         skylight.light_component.set_editor_property("intensity", 2.0)
