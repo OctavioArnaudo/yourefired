@@ -11,7 +11,9 @@ services_dir = os.path.join(app_dir, 'Services')
 if services_dir not in sys.path:
     sys.path.append(services_dir)
 
+import s_ua_loader
 import s_ua_normalizer
+import s_color
 
 def get_actor_by_label(label):
     """Encuentra un actor existente en el nivel activo por su etiqueta para evitar duplicados."""
@@ -19,6 +21,38 @@ def get_actor_by_label(label):
         if actor and actor.get_actor_label() == label:
             return actor
     return None
+
+def apply_color_to_actor_components(actor, name):
+    """Component: Aplica material y color dinámico desde s_color a los componentes visuales de un Actor/Character."""
+    if not actor:
+        return
+
+    color = s_color.get_color_for_name(name)
+    mat = s_ua_loader.get_asset_with_fallback("/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle", "/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial")
+
+    # Si es un Character con componente de malla
+    if hasattr(actor, "mesh") and actor.mesh:
+        if mat:
+            actor.mesh.set_material(0, mat)
+        dyn_mat = actor.mesh.create_and_set_material_instance_dynamic(0)
+        if dyn_mat:
+            for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo"]:
+                try:
+                    dyn_mat.set_vector_parameter_value(param, color)
+                except Exception:
+                    pass
+
+    # Si tiene static_mesh_component
+    if hasattr(actor, "static_mesh_component") and actor.static_mesh_component:
+        if mat:
+            actor.static_mesh_component.set_material(0, mat)
+        dyn_mat = actor.static_mesh_component.create_and_set_material_instance_dynamic(0)
+        if dyn_mat:
+            for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo"]:
+                try:
+                    dyn_mat.set_vector_parameter_value(param, color)
+                except Exception:
+                    pass
 
 def spawn_actor(name, class_path, position, rotation=None):
     """Component: Reutiliza un actor existente o spawnea uno nuevo sin generar duplicados ni advertencias."""
@@ -29,6 +63,7 @@ def spawn_actor(name, class_path, position, rotation=None):
     existing_actor = get_actor_by_label(name)
     if existing_actor:
         existing_actor.set_actor_location_and_rotation(unreal.Vector(*position), rotation, False, True)
+        apply_color_to_actor_components(existing_actor, name)
         unreal.log(f"[Component:ActorSpawner] Reutilizado actor existente '{name}' en la escena.")
         return existing_actor
 
@@ -73,5 +108,6 @@ def spawn_actor(name, class_path, position, rotation=None):
     actor = unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class, unreal.Vector(*position), rotation)
     if actor:
         actor.set_actor_label(name)
+        apply_color_to_actor_components(actor, name)
         unreal.log(f"[Component:ActorSpawner] Spawneado nuevo actor '{name}' exitosamente.")
     return actor

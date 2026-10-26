@@ -25,6 +25,24 @@ def get_actor_by_label(label):
             return actor
     return None
 
+def apply_color_to_mesh_actor(actor, name):
+    """Component: Crea y asigna un Dynamic Material Instance con la paleta de colores de s_color."""
+    if not actor or not hasattr(actor, "static_mesh_component") or not actor.static_mesh_component:
+        return
+
+    mat = s_ua_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
+    if mat:
+        actor.static_mesh_component.set_material(0, mat)
+
+    dyn_mat = actor.static_mesh_component.create_and_set_material_instance_dynamic(0)
+    if dyn_mat:
+        color = s_color.get_color_for_name(name)
+        for param in ["Color", "BaseColor", "Base Color", "Tint", "Albedo", "Grid Color", "GridColor"]:
+            try:
+                dyn_mat.set_vector_parameter_value(param, color)
+            except Exception:
+                pass
+
 def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None):
     """Component: Reutiliza o spawnea un StaticMeshActor homónimo actualizando sus propiedades sin duplicados."""
     if rotation is None:
@@ -51,21 +69,6 @@ def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None
         actor.set_actor_scale3d(unreal.Vector(*scale))
         if hasattr(actor, "static_mesh_component") and actor.static_mesh_component:
             actor.static_mesh_component.set_static_mesh(mesh)
-
-            mat = s_ua_loader.get_asset_with_fallback(CUSTOM_MAT_PATH, DEFAULT_MAT_PATH)
-            if mat:
-                actor.static_mesh_component.set_material(0, mat)
-
-            dyn_mat = actor.static_mesh_component.create_and_set_material_instance_dynamic(0)
-            if dyn_mat:
-                color = s_color.get_color_for_name(name)
-                try:
-                    dyn_mat.set_vector_parameter_value("BaseColor", color)
-                except Exception:
-                    pass
-                try:
-                    dyn_mat.set_vector_parameter_value("Color", color)
-                except Exception:
-                    pass
+            apply_color_to_mesh_actor(actor, name)
 
     return actor
