@@ -11,7 +11,7 @@ services_dir = os.path.join(app_dir, 'Services')
 if services_dir not in sys.path:
     sys.path.append(services_dir)
 
-import s_asset_normalizer
+import s_ua_normalizer
 
 def spawn_actor(name, class_path, position, rotation=None):
     """Component: Spawnea un actor por clase C++, Blueprint normalizado o fallback nativo."""
@@ -27,9 +27,9 @@ def spawn_actor(name, class_path, position, rotation=None):
         except Exception:
             pass
 
-    # 2. Si no existe, normalizar el nombre (ej. Coworker_01 -> CoworkerEnemy) y buscar el BP base
+    # 2. Si no existe, normalizar el nombre (ej. Coworker_01 -> SM_CoworkerEnemy) y buscar el BP base
     if not actor_class:
-        base_name = s_asset_normalizer.get_normalized_asset_name(name)
+        base_name = s_ua_normalizer.get_normalized_asset_name(name)
         bp_path = f"/Game/YoureFired/Blueprints/BP_{base_name}.BP_{base_name}_C"
         try:
             actor_class = unreal.load_class(None, bp_path)
