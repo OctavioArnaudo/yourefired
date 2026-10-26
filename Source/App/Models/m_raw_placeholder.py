@@ -1,11 +1,11 @@
 # ============================================================
-# YOU'RE FIRED - Model: Raw Assets Placeholder Definitions
+# YOU'RE FIRED - Model: Unified Primary Asset Placeholder Definitions
 # ============================================================
 import unreal
 import os
 
 PROJECT_DIR = unreal.Paths.project_dir()
-RAW_DIR = os.path.join(PROJECT_DIR, "Content", "YoureFired", "RawAssets")
+CONTENT_DIR = os.path.join(PROJECT_DIR, "Content", "YoureFired")
 
 EXPECTED_RAW_TEXTURES = [
     # Jugador (Player)
