@@ -13,23 +13,44 @@ if services_dir not in sys.path:
 
 import s_ua_normalizer
 
+def get_actor_by_label(label):
+    """Encuentra un actor existente en el nivel activo por su etiqueta para evitar duplicados."""
+    for actor in unreal.EditorLevelLibrary.get_all_level_actors():
+        if actor and actor.get_actor_label() == label:
+            return actor
+    return None
+
 def spawn_actor(name, class_path, position, rotation=None):
-    """Component: Spawnea un actor por clase C++, Blueprint normalizado o fallback nativo sin advertencias."""
+    """Component: Reutiliza un actor existente o spawnea uno nuevo sin generar duplicados ni advertencias."""
     if rotation is None:
         rotation = unreal.Rotator(0, 0, 0)
 
+    # 1. Reutilizar si ya existe un actor homónimo en la escena
+    existing_actor = get_actor_by_label(name)
+    if existing_actor:
+        existing_actor.set_actor_location_and_rotation(unreal.Vector(*position), rotation, False, True)
+        unreal.log(f"[Component:ActorSpawner] Reutilizado actor existente '{name}' en la escena.")
+        return existing_actor
+
     actor_class = None
 
-    # 1. Intentar cargar la clase o ruta especificada si el asset/paquete existe
-    if class_path:
+    # 2. Intentar obtener la clase directamente desde el módulo 'unreal' de Python si es una ruta C++
+    if class_path and class_path.startswith("/Script/"):
+        cls_name = class_path.split('.')[-1]
+        actor_class = getattr(unreal, cls_name, None)
+        if not actor_class:
+            actor_class = getattr(unreal, "C" + cls_name, None)
+
+    # 3. Si es una ruta de Blueprint en Content, verificar primero con does_asset_exist
+    if not actor_class and class_path and class_path.startswith("/Game/"):
         pkg_path = class_path.split('.')[0]
-        if class_path.startswith("/Script/") or unreal.EditorAssetLibrary.does_asset_exist(pkg_path):
+        if unreal.EditorAssetLibrary.does_asset_exist(pkg_path):
             try:
                 actor_class = unreal.load_class(None, class_path)
             except Exception:
                 pass
 
-    # 2. Si no existe, normalizar el nombre y verificar silenciada y previamente si el Blueprint existe en disco
+    # 4. Si no existe, normalizar el nombre (removiendo prefijo SM_) y verificar silenciadamente el BP base
     if not actor_class:
         base_name = s_ua_normalizer.get_normalized_asset_name(name)
         bp_name = base_name[3:] if base_name.startswith("SM_") else base_name
@@ -42,7 +63,7 @@ def spawn_actor(name, class_path, position, rotation=None):
             except Exception:
                 pass
 
-    # 3. Fallback final a clases nativas de Unreal Engine
+    # 5. Fallback final a clases nativas de Unreal Engine
     if not actor_class:
         if "Character" in (class_path or "") or "Player" in name or "Coworker" in name or "Supervisor" in name:
             actor_class = unreal.Character
@@ -52,5 +73,5 @@ def spawn_actor(name, class_path, position, rotation=None):
     actor = unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class, unreal.Vector(*position), rotation)
     if actor:
         actor.set_actor_label(name)
-        unreal.log(f"[Component:ActorSpawner] Spawneado actor '{name}' exitosamente.")
+        unreal.log(f"[Component:ActorSpawner] Spawneado nuevo actor '{name}' exitosamente.")
     return actor
