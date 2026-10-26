@@ -1,4 +1,11 @@
+# ============================================================
+# YOU'RE FIRED - Controller: Player Character Logic
+# ============================================================
 import unreal
 
-def init_worker_controller():
-    unreal.log("[Controller:WorkerCharacter] Initializing worker character controller logic.")
+def configure_player_character(player_actor):
+    """Controller: Configura propiedades iniciales del personaje del jugador en escena."""
+    if player_actor:
+        unreal.log("[Controller:PlayerCharacter] Configurando propiedades del personaje del jugador.")
+        return True
+    return False
