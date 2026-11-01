@@ -1,35 +1,15 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
 using UnrealBuildTool;
-using System.IO;
 
 public class App : ModuleRules
 {
 	public App(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {
-			"Core",
-			"CoreUObject",
-			"Engine",
-			"InputCore",
-			"EnhancedInput",
-			"NavigationSystem",
-			"AIModule",
-			"UMG",
-			"Paper2D"
-		});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
-
-		var includePaths = new System.Collections.Generic.List<string> { ModuleDirectory };
-		foreach (var subDir in new string[] { "Models", "Controllers", "Services", "Views", "Interfaces", "Enemies", "Environment", "Items" })
-		{
-			var fullPath = Path.Combine(ModuleDirectory, subDir);
-			if (Directory.Exists(fullPath))
-			{
-				includePaths.Add(fullPath);
-			}
-		}
-		PublicIncludePaths.AddRange(includePaths);
 	}
 }

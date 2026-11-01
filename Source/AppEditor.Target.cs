@@ -1,12 +1,14 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class YoureFiredEditorTarget : TargetRules
+public class AppEditorTarget : TargetRules
 {
-	public YoureFiredEditorTarget(TargetInfo Target) : base(Target)
+	public AppEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.Latest;
+		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		ExtraModuleNames.Add("App");
 	}
