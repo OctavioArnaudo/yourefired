@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "IFbKeyframe.generated.h"
 
-UCLASS()
-class APP_API IFbKeyframe : public UObject
+class APP_API IFbKeyframe
 {
-\tGENERATED_BODY()
-
 public:
-\tIFbKeyframe();
+	IFbKeyframe();
 };
-

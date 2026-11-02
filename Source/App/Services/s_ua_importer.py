@@ -10,10 +10,14 @@ def import_primary_asset(source_filepath, destination_package_path, asset_name=N
     if not os.path.exists(source_filepath):
         return None
 
+    # Verificar que las imágenes .png/.jpg tengan un tamaño de archivo binario válido (>50 bytes)
+    ext = os.path.splitext(source_filepath)[1].lower()
+    if ext in [".png", ".jpg"] and os.path.getsize(source_filepath) < 50:
+        return None
+
     if not asset_name:
         base = os.path.basename(source_filepath)
         raw_name = os.path.splitext(base)[0]
-        ext = os.path.splitext(base)[1].lower()
 
         if ext in [".png", ".jpg"]:
             asset_name = f"T_{raw_name}" if not raw_name.startswith("T_") else raw_name

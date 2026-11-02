@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "VRawPlaceholder.generated.h"
 
-UCLASS()
-class APP_API VRawPlaceholder : public UObject
+class APP_API VRawPlaceholder
 {
-\tGENERATED_BODY()
-
 public:
-\tVRawPlaceholder();
+	VRawPlaceholder();
 };
-

@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "IRawPlaceholder.generated.h"
 
-UCLASS()
-class APP_API IRawPlaceholder : public UObject
+class APP_API IRawPlaceholder
 {
-\tGENERATED_BODY()
-
 public:
-\tIRawPlaceholder();
+	IRawPlaceholder();
 };
-

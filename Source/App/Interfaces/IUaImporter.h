@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "IUaImporter.generated.h"
 
-UCLASS()
-class APP_API IUaImporter : public UObject
+class APP_API IUaImporter
 {
-\tGENERATED_BODY()
-
 public:
-\tIUaImporter();
+	IUaImporter();
 };
-

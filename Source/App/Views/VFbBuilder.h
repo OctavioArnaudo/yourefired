@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "VFbBuilder.generated.h"
 
-UCLASS()
-class APP_API VFbBuilder : public UObject
+class APP_API VFbBuilder
 {
-\tGENERATED_BODY()
-
 public:
-\tVFbBuilder();
+	VFbBuilder();
 };
-

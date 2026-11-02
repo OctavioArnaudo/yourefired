@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "VUaImporter.generated.h"
 
-UCLASS()
-class APP_API VUaImporter : public UObject
+class APP_API VUaImporter
 {
-\tGENERATED_BODY()
-
 public:
-\tVUaImporter();
+	VUaImporter();
 };
-

@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "SFbBuilder.generated.h"
 
-UCLASS()
-class APP_API SFbBuilder : public UObject
+class APP_API SFbBuilder
 {
-\tGENERATED_BODY()
-
 public:
-\tSFbBuilder();
+	SFbBuilder();
 };
-

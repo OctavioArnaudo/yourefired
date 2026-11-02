@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "SFbSprite.generated.h"
 
-UCLASS()
-class APP_API SFbSprite : public UObject
+class APP_API SFbSprite
 {
-\tGENERATED_BODY()
-
 public:
-\tSFbSprite();
+	SFbSprite();
 };
-

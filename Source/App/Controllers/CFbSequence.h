@@ -1,15 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "CFbSequence.generated.h"
 
-UCLASS()
-class APP_API CFbSequence : public UObject
+class APP_API CFbSequence
 {
-\tGENERATED_BODY()
-
 public:
-\tCFbSequence();
+	CFbSequence();
 };
-
