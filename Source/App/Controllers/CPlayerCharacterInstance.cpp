@@ -40,7 +40,10 @@ void ACPlayerCharacterInstance::SetupPlayerInputComponent(UInputComponent* Playe
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayerCharacterInstance::StopSprint);
 
 	PlayerInputComponent->BindAction("MeleeAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformMeleeAttack);
+	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformMeleeAttack);
+
 	PlayerInputComponent->BindAction("RangedAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformRangedAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformRangedAttack);
 }
 
 void ACPlayerCharacterInstance::MoveForward(float Value)
@@ -65,10 +68,12 @@ void ACPlayerCharacterInstance::StopSprint()
 
 void ACPlayerCharacterInstance::PerformMeleeAttack()
 {
+	UE_LOG(LogTemp, Warning, TEXT("[ACPlayerCharacterInstance] Melee/Primary Attack action triggered!"));
 	PlayerService.PerformMeleeAttack();
 }
 
 void ACPlayerCharacterInstance::PerformRangedAttack()
 {
+	UE_LOG(LogTemp, Warning, TEXT("[ACPlayerCharacterInstance] Ranged/Secondary Attack action triggered!"));
 	PlayerService.PerformRangedAttack(this, PlayerModel);
 }

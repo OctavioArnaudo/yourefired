@@ -3,29 +3,35 @@
 #include "Engine/World.h"
 #include "App/Models/MProjectile.h"
 #include "App/Models/MRange.h"
+#include "App/Controllers/CProjectile.h"
 
 SProjectile::SProjectile() {}
 
 void SProjectile::SpawnProjectile(ACharacter* Character, const MProjectile& ProjectileModel, const MRange& RangeModel)
 {
-	if (!Character) return;
-	if (!ProjectileModel.ProjectileClass)
+	if (!Character || !Character->GetWorld()) return;
+
+	TSubclassOf<AActor> ClassToSpawn = ProjectileModel.ProjectileClass;
+	if (!ClassToSpawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[SProjectile] No ProjectileClass assigned!"));
-		return;
+		ClassToSpawn = ACProjectile::StaticClass();
 	}
 
 	FVector SpawnLocation = Character->GetActorLocation() + (Character->GetActorForwardVector() * RangeModel.RangedSpawnOffset);
 	FRotator SpawnRotation = Character->GetActorRotation();
 
 	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Owner = Character;
 	SpawnParams.Instigator = Cast<APawn>(Character);
 
-	AActor* SpawnedActor = Character->GetWorld()->SpawnActor<AActor>(ProjectileModel.ProjectileClass, SpawnLocation, SpawnRotation, SpawnParams);
+	AActor* SpawnedActor = Character->GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
 	if (SpawnedActor)
 	{
-		UE_LOG(LogTemp, Log, TEXT("[SProjectile] Ranged projectile spawned successfully!"));
+		UE_LOG(LogTemp, Warning, TEXT("[SProjectile] Ranged mini-sphere projectile spawned successfully at %s!"), *SpawnLocation.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("[SProjectile] Failed to spawn projectile!"));
 	}
 }

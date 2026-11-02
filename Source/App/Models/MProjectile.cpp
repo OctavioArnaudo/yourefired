@@ -1,6 +1,7 @@
 #include "MProjectile.h"
+#include "App/Controllers/CProjectile.h"
 
 MProjectile::MProjectile()
-	: ProjectileClass(nullptr)
+	: ProjectileClass(ACProjectile::StaticClass())
 {
 }

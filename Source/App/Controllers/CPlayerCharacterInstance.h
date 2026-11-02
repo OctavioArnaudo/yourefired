@@ -45,7 +45,6 @@ private:
 	CSprint SprintController;
 	CWalk WalkController;
 	CRange RangeController;
-	CProjectile ProjectileController;
 	CSpawn SpawnController;
 	CCamera CameraController;
 	CCursor CursorController;
