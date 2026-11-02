@@ -1,5 +1,1 @@
-﻿# ============================================================
-# YOU'RE FIRED - Controllers : RawPlaceholder
-# ============================================================
-import unreal
-
+﻿class CRawPlaceholder: pass
