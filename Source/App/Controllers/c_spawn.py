@@ -1,0 +1,1 @@
+class CSpawn: pass

@@ -5,6 +5,15 @@
 #include "App/Models/MPlayerCharacterInstance.h"
 #include "App/Views/VPlayerCharacterInstance.h"
 #include "App/Services/SPlayerCharacterInstance.h"
+#include "CMovement.h"
+#include "CHealth.h"
+#include "CSprint.h"
+#include "CWalk.h"
+#include "CRange.h"
+#include "CProjectile.h"
+#include "CSpawn.h"
+#include "CCamera.h"
+#include "CCursor.h"
 #include "CPlayerCharacterInstance.generated.h"
 
 class UCameraComponent;
@@ -30,6 +39,16 @@ private:
 	MPlayerCharacterInstance PlayerModel;
 	VPlayerCharacterInstance PlayerView;
 	SPlayerCharacterInstance PlayerService;
+
+	CMovement MovementController;
+	CHealth HealthController;
+	CSprint SprintController;
+	CWalk WalkController;
+	CRange RangeController;
+	CProjectile ProjectileController;
+	CSpawn SpawnController;
+	CCamera CameraController;
+	CCursor CursorController;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* VerticalRectangleMesh;

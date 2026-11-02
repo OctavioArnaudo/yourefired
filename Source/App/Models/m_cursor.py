@@ -1,0 +1,1 @@
+class MCursor: pass

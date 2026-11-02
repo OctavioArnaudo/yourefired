@@ -1,0 +1,1 @@
+class MHealth: pass

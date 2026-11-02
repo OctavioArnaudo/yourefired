@@ -1,0 +1,1 @@
+class SSpawn: pass

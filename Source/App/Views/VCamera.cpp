@@ -1,12 +1,22 @@
 ﻿#include "VCamera.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
-UVCamera::UVCamera()
-	: IdentifierName(TEXT("VCamera")), bIsActive(true)
-{
-}
+VCamera::VCamera() {}
 
-bool UVCamera::ProcessVCamera(const FVector& TargetLocation)
+void VCamera::BuildCameraComponents(ACharacter* Owner, USpringArmComponent*& OutBoom, UCameraComponent*& OutCamera)
 {
-	UE_LOG(LogTemp, Log, TEXT("[UVCamera] Processing Views operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
-	return bIsActive;
+	if (!Owner) return;
+
+	OutBoom = Owner->CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	OutBoom->SetupAttachment(Owner->GetRootComponent());
+	OutBoom->SetUsingAbsoluteRotation(true);
+	OutBoom->TargetArmLength = 1200.0f;
+	OutBoom->SetRelativeRotation(FRotator(-55.0f, 0.0f, 0.0f));
+	OutBoom->bDoCollisionTest = false;
+
+	OutCamera = Owner->CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCameraComponent"));
+	OutCamera->SetupAttachment(OutBoom, USpringArmComponent::SocketName);
+	OutCamera->bUsePawnControlRotation = false;
 }

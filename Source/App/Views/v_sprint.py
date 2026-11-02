@@ -1,0 +1,1 @@
+class VSprint: pass

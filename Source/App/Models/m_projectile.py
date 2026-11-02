@@ -1,0 +1,1 @@
+class MProjectile: pass

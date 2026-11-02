@@ -1,0 +1,1 @@
+class CMovement: pass
