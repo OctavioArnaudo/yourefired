@@ -2,6 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "App/Models/MPlayerCharacterInstance.h"
+#include "App/Views/VPlayerCharacterInstance.h"
+#include "App/Services/SPlayerCharacterInstance.h"
 #include "CPlayerCharacterInstance.generated.h"
 
 class UCameraComponent;
@@ -24,7 +27,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	// --- COMPONENTES ---
+	MPlayerCharacterInstance PlayerModel;
+	VPlayerCharacterInstance PlayerView;
+	SPlayerCharacterInstance PlayerService;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* VerticalRectangleMesh;
@@ -35,26 +40,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* TopDownCameraComponent;
 
-	// --- MOVIMIENTO Y ATRIBUTOS ---
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-	float WalkSpeed;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (AllowPrivateAccess = "true"))
-	float SprintSpeed;
-
-	bool bIsSprinting;
-
-	// --- COMBATE Y PROYECTILES ---
-
-	UPROPERTY(EditDefaultsOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<AActor> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	float RangedSpawnOffset;
-
-	// --- FUNCIONES INTERNAS ---
-
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
@@ -63,6 +48,4 @@ private:
 
 	void PerformMeleeAttack();
 	void PerformRangedAttack();
-
-	void RotateTowardsCursor();
 };
