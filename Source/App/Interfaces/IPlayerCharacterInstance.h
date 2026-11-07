@@ -2,8 +2,16 @@
 
 #include "CoreMinimal.h"
 
-class APP_API IPlayerCharacterInstance
+class ACharacter;
+
+namespace App
 {
-public:
-	IPlayerCharacterInstance();
-};
+	class APP_API IPlayerCharacterInstance
+	{
+	public:
+		IPlayerCharacterInstance();
+		virtual ~IPlayerCharacterInstance() = default;
+
+		virtual void HandlePlayerInput(ACharacter* PlayerCharacter);
+	};
+}

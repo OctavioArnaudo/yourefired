@@ -1,3 +1,11 @@
 #pragma once
+
 #include "CoreMinimal.h"
-class APP_API VHealth { public: VHealth(); };
+
+class APP_API VHealth
+{
+public:
+	VHealth();
+
+	void RenderHealthUI(float HealthRatio);
+};

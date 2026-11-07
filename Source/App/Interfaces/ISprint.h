@@ -1,4 +1,5 @@
 #pragma once
+
 #include "CoreMinimal.h"
 
 namespace App
@@ -7,5 +8,8 @@ namespace App
 	{
 	public:
 		ISprint();
+		virtual ~ISprint() = default;
+
+		virtual void OnSprintToggled(bool bIsSprinting);
 	};
 }

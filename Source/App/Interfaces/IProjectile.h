@@ -1,5 +1,8 @@
 #pragma once
+
 #include "CoreMinimal.h"
+
+class AActor;
 
 namespace App
 {
@@ -7,5 +10,8 @@ namespace App
 	{
 	public:
 		IProjectile();
+		virtual ~IProjectile() = default;
+
+		virtual void OnImpact(AActor* HitActor, const FVector& ImpactPoint);
 	};
 }

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "CoreMinimal.h"
 
 namespace App
@@ -7,5 +8,8 @@ namespace App
 	{
 	public:
 		IHealth();
+		virtual ~IHealth() = default;
+
+		virtual void OnDamageTaken(float DamageAmount, float RemainingHealth);
 	};
 }

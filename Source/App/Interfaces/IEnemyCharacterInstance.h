@@ -1,5 +1,8 @@
 #pragma once
+
 #include "CoreMinimal.h"
+
+class ACharacter;
 
 namespace App
 {
@@ -7,5 +10,8 @@ namespace App
 	{
 	public:
 		IEnemyCharacterInstance();
+		virtual ~IEnemyCharacterInstance() = default;
+
+		virtual void ExecuteBehavior(ACharacter* EnemyCharacter);
 	};
 }

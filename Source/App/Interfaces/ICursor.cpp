@@ -1,5 +1,13 @@
 #include "ICursor.h"
+
 namespace App
 {
-	ICursor::ICursor() {}
+	ICursor::ICursor()
+	{
+	}
+
+	FVector ICursor::GetCursorHitLocation() const
+	{
+		return FVector::ZeroVector;
+	}
 }
