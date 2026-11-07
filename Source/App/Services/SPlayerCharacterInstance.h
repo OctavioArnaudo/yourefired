@@ -10,6 +10,7 @@
 #include "SSpawn.h"
 #include "SCamera.h"
 #include "SCursor.h"
+#include "SShoot.h"
 
 class ACharacter;
 class MPlayerCharacterInstance;
@@ -23,7 +24,7 @@ public:
 	void HandleSprint(ACharacter* Character, MPlayerCharacterInstance& Model, bool bStart);
 	void RotateTowardsCursor(ACharacter* Character);
 	void PerformMeleeAttack();
-	void PerformRangedAttack(ACharacter* Character, const MPlayerCharacterInstance& Model);
+	void PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime);
 
 	SMovement Movement;
 	SHealth Health;
@@ -34,4 +35,5 @@ public:
 	SSpawn Spawn;
 	SCamera Camera;
 	SCursor Cursor;
+	USShoot* ShootService;
 };

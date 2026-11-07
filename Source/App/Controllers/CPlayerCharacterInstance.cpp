@@ -1,7 +1,9 @@
 #include "CPlayerCharacterInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Engine/World.h"
 
 ACPlayerCharacterInstance::ACPlayerCharacterInstance()
+	: bIsRangedAttacking(false)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,6 +18,8 @@ ACPlayerCharacterInstance::ACPlayerCharacterInstance()
 	bUseControllerRotationYaw = false;
 
 	PlayerView.SetupVisuals(this, VerticalRectangleMesh, CameraBoom, TopDownCameraComponent);
+
+	ShootController = NewObject<UCShoot>();
 }
 
 void ACPlayerCharacterInstance::BeginPlay()
@@ -27,6 +31,12 @@ void ACPlayerCharacterInstance::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	PlayerService.RotateTowardsCursor(this);
+
+	// Automatic discrete firing when button is held pressed
+	if (bIsRangedAttacking && GetWorld())
+	{
+		PlayerService.PerformRangedAttack(this, PlayerModel, GetWorld()->GetTimeSeconds());
+	}
 }
 
 void ACPlayerCharacterInstance::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -42,8 +52,12 @@ void ACPlayerCharacterInstance::SetupPlayerInputComponent(UInputComponent* Playe
 	PlayerInputComponent->BindAction("MeleeAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformMeleeAttack);
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformMeleeAttack);
 
-	PlayerInputComponent->BindAction("RangedAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformRangedAttack);
-	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformRangedAttack);
+	// Discrete auto-firing on hold: IE_Pressed starts, IE_Released stops
+	PlayerInputComponent->BindAction("RangedAttack", IE_Pressed, this, &ACPlayerCharacterInstance::StartRangedAttack);
+	PlayerInputComponent->BindAction("RangedAttack", IE_Released, this, &ACPlayerCharacterInstance::StopRangedAttack);
+
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ACPlayerCharacterInstance::StartRangedAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Released, this, &ACPlayerCharacterInstance::StopRangedAttack);
 }
 
 void ACPlayerCharacterInstance::MoveForward(float Value)
@@ -72,8 +86,24 @@ void ACPlayerCharacterInstance::PerformMeleeAttack()
 	PlayerService.PerformMeleeAttack();
 }
 
-void ACPlayerCharacterInstance::PerformRangedAttack()
+void ACPlayerCharacterInstance::StartRangedAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[ACPlayerCharacterInstance] Ranged/Secondary Attack action triggered!"));
-	PlayerService.PerformRangedAttack(this, PlayerModel);
+	bIsRangedAttacking = true;
+	if (ShootController && PlayerModel.ShootModel)
+	{
+		ShootController->StartFiring(PlayerModel.ShootModel);
+	}
+	if (GetWorld())
+	{
+		PlayerService.PerformRangedAttack(this, PlayerModel, GetWorld()->GetTimeSeconds());
+	}
+}
+
+void ACPlayerCharacterInstance::StopRangedAttack()
+{
+	bIsRangedAttacking = false;
+	if (ShootController && PlayerModel.ShootModel)
+	{
+		ShootController->StopFiring(PlayerModel.ShootModel);
+	}
 }

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "App/Models/MShoot.h"
 #include "CShoot.generated.h"
 
 UCLASS(BlueprintType, Blueprintable)
@@ -17,6 +18,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controllers")
 	bool bIsActive;
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	void StartFiring(UMShoot* ShootModel);
+
+	UFUNCTION(BlueprintCallable, Category = "Controllers")
+	void StopFiring(UMShoot* ShootModel);
 
 	UFUNCTION(BlueprintCallable, Category = "Controllers")
 	bool ProcessCShoot(const FVector& TargetLocation);

@@ -12,18 +12,30 @@ class APP_API UMShoot : public UObject
 public:
 	UMShoot();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
 	FString IdentifierName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
 	bool bIsActive;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
+	bool bIsFiring;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
 	float ProjectileSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Models")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
+	float FireRate; // Cooldown in seconds between discrete shots (e.g. 0.25s)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
+	float LastFireTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shoot")
 	TSubclassOf<AActor> ProjectileClass;
 
-	UFUNCTION(BlueprintCallable, Category = "Models")
+	UFUNCTION(BlueprintCallable, Category = "Shoot")
+	bool CanFire(float CurrentTime) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Shoot")
 	bool ProcessMShoot(const FVector& TargetLocation);
 };

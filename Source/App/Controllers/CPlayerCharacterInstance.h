@@ -14,10 +14,11 @@
 #include "CSpawn.h"
 #include "CCamera.h"
 #include "CCursor.h"
+#include "CShoot.h"
 #include "CPlayerCharacterInstance.generated.h"
 
 class UCameraComponent;
-class USpringArmComponent;
+class USSpringArmComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -49,14 +50,19 @@ private:
 	CCamera CameraController;
 	CCursor CursorController;
 
+	UPROPERTY()
+	UCShoot* ShootController;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* VerticalRectangleMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
+	USSpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* TopDownCameraComponent;
+
+	bool bIsRangedAttacking;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -65,5 +71,6 @@ private:
 	void StopSprint();
 
 	void PerformMeleeAttack();
-	void PerformRangedAttack();
+	void StartRangedAttack();
+	void StopRangedAttack();
 };

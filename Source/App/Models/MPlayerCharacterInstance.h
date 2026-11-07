@@ -10,6 +10,7 @@
 #include "MSpawn.h"
 #include "MCamera.h"
 #include "MCursor.h"
+#include "MShoot.h"
 
 class APP_API MPlayerCharacterInstance
 {
@@ -31,4 +32,7 @@ public:
 	MSpawn Spawn;
 	MCamera Camera;
 	MCursor Cursor;
+
+	UPROPERTY()
+	UMShoot* ShootModel;
 };

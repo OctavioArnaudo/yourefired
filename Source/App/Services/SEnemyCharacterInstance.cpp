@@ -44,7 +44,7 @@ void SEnemyCharacterInstance::ExecutePatrol(ACharacter* EnemyCharacter, MEnemyCh
 
 void SEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
 {
-	if (!EnemyCharacter) return;
+	if (!EnemyCharacter || !EnemyCharacter->GetWorld()) return;
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(EnemyCharacter, 0);
 	if (!PlayerPawn) return;
 
@@ -78,10 +78,13 @@ void SEnemyCharacterInstance::PerformMeleeAttack()
 
 void SEnemyCharacterInstance::PerformRangedAttack(ACharacter* EnemyCharacter, const MEnemyCharacterInstance& Model)
 {
-	UE_LOG(LogTemp, Verbose, TEXT("[SEnemyCharacterInstance] Delegating shoot attack execution to SShoot unit service..."));
+	if (!EnemyCharacter || !EnemyCharacter->GetWorld()) return;
+
 	USShoot* ShootService = NewObject<USShoot>();
-	if (ShootService)
+	if (ShootService && Model.ShootModel)
 	{
-		ShootService->PerformRangedShoot(EnemyCharacter, Model.EnemyProjectileClass);
+		// Use discrete rate-limited shoot service so enemy fires discrete 1-by-1 shots instead of continuous stream
+		float CurrentTime = EnemyCharacter->GetWorld()->GetTimeSeconds();
+		ShootService->PerformDiscreteRangedShoot(EnemyCharacter, Model.ShootModel, Model.EnemyProjectileClass, CurrentTime);
 	}
 }

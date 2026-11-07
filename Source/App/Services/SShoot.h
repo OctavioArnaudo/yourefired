@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "App/Models/MShoot.h"
 #include "SShoot.generated.h"
 
 class ACharacter;
@@ -25,4 +26,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Services")
 	bool PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> ProjectileClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootModel, TSubclassOf<AActor> ProjectileClass, float CurrentTime);
 };

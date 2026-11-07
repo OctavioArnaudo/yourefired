@@ -1,8 +1,10 @@
 #include "SPlayerCharacterInstance.h"
 #include "App/Models/MPlayerCharacterInstance.h"
+#include "Engine/World.h"
 
 SPlayerCharacterInstance::SPlayerCharacterInstance()
 {
+	ShootService = NewObject<USShoot>();
 }
 
 void SPlayerCharacterInstance::HandleMovement(ACharacter* Character, float Value, bool bForward)
@@ -25,7 +27,15 @@ void SPlayerCharacterInstance::PerformMeleeAttack()
 	Range.ExecuteMeleeCheck();
 }
 
-void SPlayerCharacterInstance::PerformRangedAttack(ACharacter* Character, const MPlayerCharacterInstance& Model)
+void SPlayerCharacterInstance::PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime)
 {
-	Projectile.SpawnProjectile(Character, Model.Projectile, Model.Range);
+	if (!ShootService)
+	{
+		ShootService = NewObject<USShoot>();
+	}
+
+	if (ShootService && Model.ShootModel)
+	{
+		ShootService->PerformDiscreteRangedShoot(Character, Model.ShootModel, Model.ProjectileClass, CurrentTime);
+	}
 }
