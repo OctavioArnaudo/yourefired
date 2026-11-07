@@ -5,6 +5,9 @@
 #include "Engine/World.h"
 #include "App/Models/MEnemyCharacterInstance.h"
 #include "App/Controllers/CProjectile.h"
+#include "App/Services/SPatrol.h"
+#include "App/Services/SMelee.h"
+#include "App/Services/SShoot.h"
 
 SEnemyCharacterInstance::SEnemyCharacterInstance() {}
 
@@ -31,7 +34,12 @@ void SEnemyCharacterInstance::UpdateAIBehavior(ACharacter* EnemyCharacter, MEnem
 
 void SEnemyCharacterInstance::ExecutePatrol(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
 {
-	UE_LOG(LogTemp, Verbose, TEXT("[SEnemyCharacterInstance] Patrolling..."));
+	UE_LOG(LogTemp, Verbose, TEXT("[SEnemyCharacterInstance] Delegating patrol execution to SPatrol unit service..."));
+	USPatrol* PatrolService = NewObject<USPatrol>();
+	if (PatrolService)
+	{
+		PatrolService->ExecutePatrolStep(EnemyCharacter, Model.PatrolHomeLocation, Model.PatrolRadius);
+	}
 }
 
 void SEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
@@ -51,6 +59,11 @@ void SEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, 
 	if (DistanceToPlayer <= Model.MeleeAttackRange)
 	{
 		PerformMeleeAttack();
+		USMelee* MeleeService = NewObject<USMelee>();
+		if (MeleeService)
+		{
+			MeleeService->PerformMeleeAttack(EnemyCharacter);
+		}
 	}
 	else
 	{
@@ -65,22 +78,10 @@ void SEnemyCharacterInstance::PerformMeleeAttack()
 
 void SEnemyCharacterInstance::PerformRangedAttack(ACharacter* EnemyCharacter, const MEnemyCharacterInstance& Model)
 {
-	if (!EnemyCharacter || !EnemyCharacter->GetWorld()) return;
-
-	TSubclassOf<AActor> ClassToSpawn = Model.EnemyProjectileClass;
-	if (!ClassToSpawn)
+	UE_LOG(LogTemp, Verbose, TEXT("[SEnemyCharacterInstance] Delegating shoot attack execution to SShoot unit service..."));
+	USShoot* ShootService = NewObject<USShoot>();
+	if (ShootService)
 	{
-		ClassToSpawn = ACProjectile::StaticClass();
+		ShootService->PerformRangedShoot(EnemyCharacter, Model.EnemyProjectileClass);
 	}
-
-	FVector SpawnLocation = EnemyCharacter->GetActorLocation() + (EnemyCharacter->GetActorForwardVector() * 100.0f);
-	FRotator SpawnRotation = EnemyCharacter->GetActorRotation();
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Owner = EnemyCharacter;
-	SpawnParams.Instigator = EnemyCharacter;
-
-	EnemyCharacter->GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-	UE_LOG(LogTemp, Log, TEXT("[SEnemyCharacterInstance] Enemy RANGED attack projectile spawned!"));
 }

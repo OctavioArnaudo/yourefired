@@ -16,6 +16,15 @@ import s_asset_loader
 DEFAULT_MAT_PATH = "/Game/LevelPrototyping/Materials/M_PrototypeGrid.M_PrototypeGrid"
 CUSTOM_MAT_PATH = "/Game/YoureFired/Materials/M_OfficeStyle.M_OfficeStyle"
 
+def _spawn_actor_from_class(actor_class, location, rotation):
+    try:
+        subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+        if subsystem:
+            return subsystem.spawn_actor_from_class(actor_class, location, rotation)
+    except Exception:
+        pass
+    return unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class, location, rotation)
+
 def spawn_actor(name, class_path, position, rotation=None):
     """Component: Spawnea un actor por clase con soporte para assets propios y fallback nativo."""
     if rotation is None:
@@ -23,13 +32,12 @@ def spawn_actor(name, class_path, position, rotation=None):
 
     actor_class = unreal.load_class(None, class_path)
     if not actor_class:
-        # Fallback automático a clases nativas si la clase específica no está compilada/definida
         if "Character" in class_path or "Worker" in name or "Coworker" in name or "Supervisor" in name:
             actor_class = unreal.Character
         else:
             actor_class = unreal.Actor
 
-    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(actor_class, unreal.Vector(*position), rotation)
+    actor = _spawn_actor_from_class(actor_class, unreal.Vector(*position), rotation)
     if actor:
         actor.set_actor_label(name)
         unreal.log("[Component:Spawner] Spawneado actor: " + name)
@@ -70,7 +78,7 @@ def spawn_mesh(name, default_mesh_path, position, scale=(1, 1, 1), rotation=None
         unreal.log_error("No se pudo cargar mesh para: " + name)
         return None
 
-    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(*position), rotation)
+    actor = _spawn_actor_from_class(unreal.StaticMeshActor, unreal.Vector(*position), rotation)
     if actor:
         actor.set_actor_label(name)
         actor.set_actor_scale3d(unreal.Vector(*scale))
