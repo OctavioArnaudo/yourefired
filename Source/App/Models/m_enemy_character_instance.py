@@ -1,0 +1,1 @@
+class MEnemyCharacterInstance: pass

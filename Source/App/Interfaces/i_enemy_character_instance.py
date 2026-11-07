@@ -1,0 +1,1 @@
+class IEnemyCharacterInstance: pass
