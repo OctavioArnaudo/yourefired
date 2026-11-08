@@ -33,7 +33,6 @@ public:
 	MCamera Camera;
 	MCursor Cursor;
 
-	UPROPERTY()
 	UMShoot* ShootModel;
 
 	UMShoot* GetShootModel();

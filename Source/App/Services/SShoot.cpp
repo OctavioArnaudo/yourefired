@@ -17,7 +17,7 @@ bool USShoot::ProcessSShoot(const FVector& TargetLocation)
 
 bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> ProjectileClass)
 {
-	if (!Shooter || !Shooter->GetWorld()) return false;
+	if (!IsValid(Shooter) || !Shooter->GetWorld()) return false;
 
 	TSubclassOf<AActor> ClassToSpawn = ProjectileClass;
 	if (!ClassToSpawn)
@@ -34,15 +34,22 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 	SpawnParams.Instigator = Shooter;
 
 	AActor* SpawnedActor = Shooter->GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-	if (SpawnedActor)
+	if (IsValid(SpawnedActor))
 	{
 		ACProjectile* Proj = Cast<ACProjectile>(SpawnedActor);
-		if (Proj && Proj->ProjectileMovement)
+		if (IsValid(Proj))
 		{
-			Proj->ProjectileMovement->Velocity = SpawnRotation.Vector() * Proj->ProjectileMovement->InitialSpeed;
+			Proj->ShooterActor = Shooter;
+			Proj->SetActorRotation(SpawnRotation);
+			if (Proj->ProjectileMovement)
+			{
+				Proj->ProjectileMovement->SetUpdatedComponent(Proj->GetRootComponent());
+				Proj->ProjectileMovement->Velocity = SpawnRotation.Vector() * Proj->ProjectileMovement->InitialSpeed;
+				Proj->ProjectileMovement->Activate();
+			}
 		}
 
-		UE_LOG(LogTemp, Log, TEXT("[USShoot] Unit RANGED shoot executed! Spawned projectile '%s' at %s with velocity."),
+		UE_LOG(LogTemp, Log, TEXT("[USShoot] Unit RANGED shoot executed! Spawned projectile '%s' at %s with active velocity."),
 			*SpawnedActor->GetName(), *SpawnLocation.ToString());
 		return true;
 	}
@@ -52,7 +59,7 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 
 bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootModel, TSubclassOf<AActor> ProjectileClass, float CurrentTime)
 {
-	if (!Shooter || !Shooter->GetWorld() || !ShootModel) return false;
+	if (!IsValid(Shooter) || !Shooter->GetWorld() || !ShootModel) return false;
 
 	if (!ShootModel->CanFire(CurrentTime))
 	{
@@ -76,15 +83,22 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 	SpawnParams.Instigator = Shooter;
 
 	AActor* SpawnedActor = Shooter->GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-	if (SpawnedActor)
+	if (IsValid(SpawnedActor))
 	{
 		ACProjectile* Proj = Cast<ACProjectile>(SpawnedActor);
-		if (Proj && Proj->ProjectileMovement)
+		if (IsValid(Proj))
 		{
-			Proj->ProjectileMovement->Velocity = SpawnRotation.Vector() * Proj->ProjectileMovement->InitialSpeed;
+			Proj->ShooterActor = Shooter;
+			Proj->SetActorRotation(SpawnRotation);
+			if (Proj->ProjectileMovement)
+			{
+				Proj->ProjectileMovement->SetUpdatedComponent(Proj->GetRootComponent());
+				Proj->ProjectileMovement->Velocity = SpawnRotation.Vector() * Proj->ProjectileMovement->InitialSpeed;
+				Proj->ProjectileMovement->Activate();
+			}
 		}
 
-		UE_LOG(LogTemp, Log, TEXT("[USShoot] DISCRETE projectile spawned for '%s' at t=%.2fs with forward velocity."),
+		UE_LOG(LogTemp, Log, TEXT("[USShoot] DISCRETE projectile spawned for '%s' at t=%.2fs with active velocity."),
 			*Shooter->GetName(), CurrentTime);
 		return true;
 	}

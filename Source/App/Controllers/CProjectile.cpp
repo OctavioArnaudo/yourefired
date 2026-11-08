@@ -11,6 +11,7 @@
 
 ACProjectile::ACProjectile()
 	: ProjectileDamage(25.0f)
+	, ShooterActor(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -31,7 +32,7 @@ ACProjectile::ACProjectile()
 	}
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-	ProjectileMovement->UpdatedComponent = ProjectileMesh;
+	ProjectileMovement->SetUpdatedComponent(RootComponent);
 	ProjectileMovement->InitialSpeed = 2500.0f;
 	ProjectileMovement->MaxSpeed = 2500.0f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
@@ -46,7 +47,9 @@ void ACProjectile::BeginPlay()
 	Super::BeginPlay();
 	if (ProjectileMovement)
 	{
+		ProjectileMovement->SetUpdatedComponent(RootComponent);
 		ProjectileMovement->Velocity = GetActorForwardVector() * ProjectileMovement->InitialSpeed;
+		ProjectileMovement->Activate();
 	}
 
 	if (ProjectileMesh)
@@ -68,7 +71,7 @@ void ACProjectile::Tick(float DeltaTime)
 
 	for (AActor* Actor : FoundCharacters)
 	{
-		if (IsValid(Actor) && Actor != this && Actor != GetOwner())
+		if (IsValid(Actor) && Actor != this && Actor != ShooterActor && Actor != GetOwner())
 		{
 			float Dist = FVector::Dist(CurrentLoc, Actor->GetActorLocation());
 			if (Dist <= 120.0f)
@@ -93,7 +96,7 @@ void ACProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void ACProjectile::ProcessHit(AActor* OtherActor)
 {
-	if (IsValid(OtherActor) && OtherActor != this && OtherActor != GetOwner())
+	if (IsValid(OtherActor) && OtherActor != this && OtherActor != ShooterActor && OtherActor != GetOwner())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROJECTILE HIT '%s' (Class: %s)! Applying %.2f damage."),
 			*OtherActor->GetName(), *OtherActor->GetClass()->GetName(), ProjectileDamage);

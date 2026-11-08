@@ -18,7 +18,6 @@ public:
 
 	MHealth Health;
 
-	UPROPERTY()
 	UMShoot* ShootModel;
 
 	UMShoot* GetShootModel();
