@@ -36,6 +36,12 @@ void SPlayerCharacterInstance::HandleSprint(ACharacter* Character, MPlayerCharac
 	Sprint.SetSprintState(Character, Model.Sprint, Model.Movement, bStart);
 }
 
+void SPlayerCharacterInstance::HandleWalk(ACharacter* Character, MPlayerCharacterInstance& Model, bool bWalk)
+{
+	Model.Walk.bIsWalking = bWalk;
+	Walk.ApplyWalkMode(Character, Model.Walk);
+}
+
 void SPlayerCharacterInstance::RotateTowardsCursor(ACharacter* Character)
 {
 	Cursor.OrientTowardsCursor(Character);

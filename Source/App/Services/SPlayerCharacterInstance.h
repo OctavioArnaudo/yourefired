@@ -23,6 +23,7 @@ public:
 
 	void HandleMovement(ACharacter* Character, float Value, bool bForward);
 	void HandleSprint(ACharacter* Character, MPlayerCharacterInstance& Model, bool bStart);
+	void HandleWalk(ACharacter* Character, MPlayerCharacterInstance& Model, bool bWalk);
 	void RotateTowardsCursor(ACharacter* Character);
 	void PerformMeleeAttack(ACharacter* Character);
 	void PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime);

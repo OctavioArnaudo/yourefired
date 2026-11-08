@@ -18,7 +18,7 @@
 #include "CPlayerCharacterInstance.generated.h"
 
 class UCameraComponent;
-class USpringArmComponent;
+class USSpringArmComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -92,6 +92,8 @@ private:
 
 	void StartSprint();
 	void StopSprint();
+	void StartWalk();
+	void StopWalk();
 
 	void PerformMeleeAttack();
 	void StartRangedAttack();

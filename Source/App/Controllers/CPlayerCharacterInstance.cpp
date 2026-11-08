@@ -48,6 +48,9 @@ void ACPlayerCharacterInstance::SetupPlayerInputComponent(UInputComponent* Playe
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPlayerCharacterInstance::StartSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayerCharacterInstance::StopSprint);
 
+	PlayerInputComponent->BindAction("Walk", IE_Pressed, this, &ACPlayerCharacterInstance::StartWalk);
+	PlayerInputComponent->BindAction("Walk", IE_Released, this, &ACPlayerCharacterInstance::StopWalk);
+
 	PlayerInputComponent->BindAction("MeleeAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformMeleeAttack);
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ACPlayerCharacterInstance::PerformMeleeAttack);
 
@@ -150,6 +153,18 @@ void ACPlayerCharacterInstance::StopSprint()
 {
 	if (IsDead()) return;
 	PlayerService.HandleSprint(this, PlayerModel, false);
+}
+
+void ACPlayerCharacterInstance::StartWalk()
+{
+	if (IsDead()) return;
+	PlayerService.HandleWalk(this, PlayerModel, true);
+}
+
+void ACPlayerCharacterInstance::StopWalk()
+{
+	if (IsDead()) return;
+	PlayerService.HandleWalk(this, PlayerModel, false);
 }
 
 void ACPlayerCharacterInstance::PerformMeleeAttack()
