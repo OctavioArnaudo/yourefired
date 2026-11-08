@@ -66,10 +66,14 @@ void ACPlayerCharacterInstance::FireBullet()
 
 float ACPlayerCharacterInstance::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[ACPlayerCharacterInstance] TAKE DAMAGE CALLED! Amount=%.2f, Causer=%s"),
+		DamageAmount, DamageCauser ? *DamageCauser->GetName() : TEXT("nullptr"));
+
 	if (IsDead()) return 0.0f;
 
-	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float ActualDamage = (DamageAmount > 0.0f) ? DamageAmount : 25.0f;
 	HealthController.ReceiveDamage(PlayerModel.Health, ActualDamage);
+
 	UE_LOG(LogTemp, Warning, TEXT("[ACPlayerCharacterInstance] Player took %.2f damage! Current Health: %.2f / %.2f"),
 		ActualDamage, GetHealth(), GetMaxHealth());
 

@@ -35,16 +35,18 @@ void ACEnemyCharacterInstance::BeginPlay()
 void ACEnemyCharacterInstance::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (!IsDead())
+
+	if (IsPendingKillPending()) return;
+	if (IsDead()) return;
+
+	if (!EnemyService)
 	{
-		if (!EnemyService)
-		{
-			EnemyService = NewObject<USEnemyCharacterInstance>(this);
-		}
-		if (IsValid(EnemyService))
-		{
-			EnemyService->UpdateAIBehavior(this, EnemyModel);
-		}
+		EnemyService = NewObject<USEnemyCharacterInstance>(this);
+	}
+
+	if (IsValid(EnemyService))
+	{
+		EnemyService->UpdateAIBehavior(this, EnemyModel);
 	}
 }
 
