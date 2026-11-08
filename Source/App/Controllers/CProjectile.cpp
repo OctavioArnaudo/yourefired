@@ -52,6 +52,8 @@ void ACProjectile::BeginPlay()
 		ProjectileMovement->Activate();
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Spawned at %s with velocity %s"), *GetActorLocation().ToString(), *ProjectileMovement->Velocity.ToString());
+
 	if (ProjectileMesh)
 	{
 		ProjectileMesh->OnComponentHit.AddDynamic(this, &ACProjectile::OnProjectileHit);
@@ -74,9 +76,10 @@ void ACProjectile::Tick(float DeltaTime)
 		if (IsValid(Actor) && Actor != this && Actor != ShooterActor && Actor != GetOwner())
 		{
 			float Dist = FVector::Dist(CurrentLoc, Actor->GetActorLocation());
-			if (Dist <= 120.0f)
+			// Increase threshold slightly to 150.0f for reliable hit registration
+			if (Dist <= 150.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact with '%s' at dist %.1f!"), *Actor->GetName(), Dist);
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROXIMITY IMPACT! Hit '%s' at dist %.1f!"), *Actor->GetName(), Dist);
 				ProcessHit(Actor);
 				break;
 			}
@@ -117,7 +120,7 @@ void ACProjectile::ProcessHit(AActor* OtherActor)
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Fallback to ApplyDamage."));
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Fallback to ApplyDamage.Header"));
 				UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
 			}
 		}
