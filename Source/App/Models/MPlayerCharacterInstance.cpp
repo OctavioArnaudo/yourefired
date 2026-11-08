@@ -7,9 +7,17 @@ MPlayerCharacterInstance::MPlayerCharacterInstance()
 	, RangedSpawnOffset(100.0f)
 	, ShootModel(nullptr)
 {
-	ShootModel = NewObject<UMShoot>();
-	if (ShootModel)
+}
+
+UMShoot* MPlayerCharacterInstance::GetShootModel()
+{
+	if (!ShootModel)
 	{
-		ShootModel->FireRate = 0.25f; // Discrete player fire rate (4 shots per second max when held)
+		ShootModel = NewObject<UMShoot>();
+		if (ShootModel)
+		{
+			ShootModel->FireRate = 0.25f;
+		}
 	}
+	return ShootModel;
 }

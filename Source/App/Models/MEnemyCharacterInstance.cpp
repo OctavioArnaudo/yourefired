@@ -10,9 +10,17 @@ MEnemyCharacterInstance::MEnemyCharacterInstance()
 	, Health(80.0f)
 	, ShootModel(nullptr)
 {
-	ShootModel = NewObject<UMShoot>();
-	if (ShootModel)
+}
+
+UMShoot* MEnemyCharacterInstance::GetShootModel()
+{
+	if (!ShootModel)
 	{
-		ShootModel->FireRate = 1.5f; // Balanced enemy fire rate: 1 shot every 1.5 seconds (not too frequent)
+		ShootModel = NewObject<UMShoot>();
+		if (ShootModel)
+		{
+			ShootModel->FireRate = 1.5f;
+		}
 	}
+	return ShootModel;
 }

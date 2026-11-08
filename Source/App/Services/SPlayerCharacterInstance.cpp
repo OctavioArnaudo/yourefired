@@ -43,8 +43,8 @@ void SPlayerCharacterInstance::PerformRangedAttack(ACharacter* Character, MPlaye
 		ShootService = NewObject<USShoot>();
 	}
 
-	if (ShootService && Model.ShootModel)
+	if (ShootService && Model.GetShootModel())
 	{
-		ShootService->PerformDiscreteRangedShoot(Character, Model.ShootModel, Model.ProjectileClass, CurrentTime);
+		ShootService->PerformDiscreteRangedShoot(Character, Model.GetShootModel(), Model.ProjectileClass, CurrentTime);
 	}
 }

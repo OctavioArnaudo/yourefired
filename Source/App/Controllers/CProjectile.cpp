@@ -68,12 +68,13 @@ void ACProjectile::Tick(float DeltaTime)
 
 	for (AActor* Actor : FoundCharacters)
 	{
-		if (Actor && Actor != this && Actor != GetOwner())
+		if (IsValid(Actor) && Actor != this && Actor != GetOwner())
 		{
 			float Dist = FVector::Dist(CurrentLoc, Actor->GetActorLocation());
 			if (Dist <= 120.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact detected with '%s' at distance %.1f!"), *Actor->GetName(), Dist);
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact with '%s' (Class: %s) at dist %.1f!"),
+					*Actor->GetName(), *Actor->GetClass()->GetName(), Dist);
 				ProcessHit(Actor);
 				break;
 			}
@@ -93,19 +94,20 @@ void ACProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void ACProjectile::ProcessHit(AActor* OtherActor)
 {
-	if (OtherActor && OtherActor != this && OtherActor != GetOwner())
+	if (IsValid(OtherActor) && OtherActor != this && OtherActor != GetOwner())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROJECTILE HIT '%s'! Applying direct %.2f damage."), *OtherActor->GetName(), ProjectileDamage);
+		UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROJECTILE HIT '%s' (Class: %s)! Applying %.2f damage."),
+			*OtherActor->GetName(), *OtherActor->GetClass()->GetName(), ProjectileDamage);
 
 		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(OtherActor);
-		if (PlayerTarget)
+		if (IsValid(PlayerTarget))
 		{
 			PlayerTarget->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
 		}
 		else
 		{
 			ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(OtherActor);
-			if (EnemyTarget)
+			if (IsValid(EnemyTarget))
 			{
 				EnemyTarget->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
 			}
@@ -114,6 +116,9 @@ void ACProjectile::ProcessHit(AActor* OtherActor)
 				UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
 			}
 		}
+
+		// Universal fallback
+		UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
 
 		Destroy();
 	}

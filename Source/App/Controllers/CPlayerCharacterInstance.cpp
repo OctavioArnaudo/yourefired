@@ -163,7 +163,7 @@ void ACPlayerCharacterInstance::StartRangedAttack()
 	FireBullet();
 
 	// Set repeating timer for automatic continuous discrete firing while button is held down
-	float FireRate = PlayerModel.ShootModel ? PlayerModel.ShootModel->FireRate : 0.25f;
+	float FireRate = PlayerModel.GetShootModel() ? PlayerModel.GetShootModel()->FireRate : 0.25f;
 	GetWorld()->GetTimerManager().SetTimer(FiringTimerHandle, this, &ACPlayerCharacterInstance::FireBullet, FireRate, true);
 	UE_LOG(LogTemp, Log, TEXT("[ACPlayerCharacterInstance] Start holding ranged attack. Auto-firing enabled at %.2fs rate."), FireRate);
 }
