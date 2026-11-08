@@ -1,6 +1,8 @@
 #include "SShoot.h"
 #include "GameFramework/Character.h"
 #include "Engine/World.h"
+#include "App/Controllers/CProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "App/Controllers/CPlayerCharacterInstance.h"
 #include "App/Controllers/CEnemyCharacterInstance.h"
@@ -21,10 +23,42 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 	if (!IsValid(Shooter) || !IsValid(Shooter->GetWorld())) return false;
 
 	UWorld* World = Shooter->GetWorld();
+
+	// 1. Spawn visual projectile for graphics/animation feedback
+	TSubclassOf<AActor> ClassToSpawn = ProjectileClass;
+	if (!ClassToSpawn)
+	{
+		ClassToSpawn = ACProjectile::StaticClass();
+	}
+
+	FVector SpawnLocation = Shooter->GetActorLocation() + (Shooter->GetActorForwardVector() * 100.0f);
+	FRotator SpawnRotation = Shooter->GetActorRotation();
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Owner = Shooter;
+	SpawnParams.Instigator = Shooter;
+
+	AActor* SpawnedActor = World->SpawnActor<AActor>(ClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+	if (IsValid(SpawnedActor))
+	{
+		ACProjectile* Proj = Cast<ACProjectile>(SpawnedActor);
+		if (IsValid(Proj))
+		{
+			Proj->ShooterActor = Shooter;
+			Proj->SetActorRotation(SpawnRotation);
+			if (Proj->ProjectileMovement)
+			{
+				Proj->ProjectileMovement->SetUpdatedComponent(Proj->GetRootComponent());
+				Proj->ProjectileMovement->Velocity = SpawnRotation.Vector() * Proj->ProjectileMovement->InitialSpeed;
+				Proj->ProjectileMovement->Activate();
+			}
+		}
+	}
+
+	// 2. Instant trace-based damage application for 100% reliable combat hit
 	FVector StartLoc = Shooter->GetActorLocation() + (Shooter->GetActorForwardVector() * 50.0f);
 	FVector EndLoc = StartLoc + (Shooter->GetActorForwardVector() * 2000.0f);
-
-	UE_LOG(LogTemp, Warning, TEXT("[USShoot] '%s' performs ranged shoot (Trace-based)."), *Shooter->GetName());
 
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
@@ -41,7 +75,7 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 	if (bHit && IsValid(HitResult.GetActor()))
 	{
 		AActor* HitActor = HitResult.GetActor();
-		UE_LOG(LogTemp, Warning, TEXT("[USShoot] Ranged hit target '%s' (Class: %s)! Applying damage."), *HitActor->GetName(), *HitActor->GetClass()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[USShoot] Ranged visual+instant hit on '%s'! Applying damage."), *HitActor->GetName());
 
 		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(HitActor);
 		if (IsValid(PlayerTarget))
@@ -77,10 +111,42 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 	ShootModel->LastFireTime = CurrentTime;
 
 	UWorld* World = Shooter->GetWorld();
+
+	// 1. Spawn visual projectile for graphics feedback
+	TSubclassOf<AActor> ClassToSpawn = ProjectileClass ? ProjectileClass : ShootModel->ProjectileClass;
+	if (!ClassToSpawn)
+	{
+		ClassToSpawn = ACProjectile::StaticClass();
+	}
+
+	FVector SpawnLocation = Shooter->GetActorLocation() + (Shooter->GetActorForwardVector() * 100.0f);
+	FRotator SpawnRotation = Shooter->GetActorRotation();
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Owner = Shooter;
+	SpawnParams.Instigator = Shooter;
+
+	AActor* SpawnedActor = World->SpawnActor<AActor>(ClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+	if (IsValid(SpawnedActor))
+	{
+		ACProjectile* Proj = Cast<ACProjectile>(SpawnedActor);
+		if (IsValid(Proj))
+		{
+			Proj->ShooterActor = Shooter;
+			Proj->SetActorRotation(SpawnRotation);
+			if (Proj->ProjectileMovement)
+			{
+				Proj->ProjectileMovement->SetUpdatedComponent(Proj->GetRootComponent());
+				Proj->ProjectileMovement->Velocity = SpawnRotation.Vector() * Proj->ProjectileMovement->InitialSpeed;
+				Proj->ProjectileMovement->Activate();
+			}
+		}
+	}
+
+	// 2. Instant trace-based damage application for 100% reliable combat hit
 	FVector StartLoc = Shooter->GetActorLocation() + (Shooter->GetActorForwardVector() * 50.0f);
 	FVector EndLoc = StartLoc + (Shooter->GetActorForwardVector() * 2000.0f);
-
-	UE_LOG(LogTemp, Warning, TEXT("[USShoot] '%s' performs discrete ranged shoot (Trace-based) at t=%.2fs."), *Shooter->GetName(), CurrentTime);
 
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
@@ -97,7 +163,7 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 	if (bHit && IsValid(HitResult.GetActor()))
 	{
 		AActor* HitActor = HitResult.GetActor();
-		UE_LOG(LogTemp, Warning, TEXT("[USShoot] Discrete ranged hit target '%s' (Class: %s)! Applying damage."), *HitActor->GetName(), *HitActor->GetClass()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("[USShoot] Discrete ranged visual+instant hit on '%s'! Applying damage."), *HitActor->GetName());
 
 		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(HitActor);
 		if (IsValid(PlayerTarget))
