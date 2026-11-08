@@ -33,7 +33,7 @@ bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 		float Dist = FVector::Dist(AttackerLoc, PlayerPawn->GetActorLocation());
 		if (Dist <= 150.0f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Enemy melee hit Player (Class: %s) at dist %.1f!"), *PlayerPawn->GetClass()->GetName(), Dist);
+			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Enemy melee hit Player at dist %.1f!"), Dist);
 			PerformMeleeAttackOnTarget(Attacker, PlayerPawn);
 			return true;
 		}
@@ -49,7 +49,7 @@ bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 			float Dist = FVector::Dist(AttackerLoc, Enemy->GetActorLocation());
 			if (Dist <= 150.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[USMelee] Player melee hit Enemy '%s' (Class: %s) at dist %.1f!"), *Enemy->GetName(), *Enemy->GetClass()->GetName(), Dist);
+				UE_LOG(LogTemp, Warning, TEXT("[USMelee] Player melee hit Enemy '%s' at dist %.1f!"), *Enemy->GetName(), Dist);
 				PerformMeleeAttackOnTarget(Attacker, Enemy);
 				break;
 			}
@@ -68,26 +68,23 @@ bool USMelee::PerformMeleeAttackOnTarget(ACharacter* Attacker, AActor* Target)
 	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
 	if (IsValid(PlayerTarget))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("[USMelee] Successfully cast Target to ACPlayerCharacterInstance. Calling TakeDamage."));
-		PlayerTarget->TakeDamage(MeleeDamage, FDamageEvent(), Attacker->GetController(), Attacker);
+		UE_LOG(LogTemp, Warning, TEXT("[USMelee] Calling ReceiveDamageDirect on Player."));
+		PlayerTarget->ReceiveDamageDirect(MeleeDamage);
 	}
 	else
 	{
 		ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
 		if (IsValid(EnemyTarget))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Successfully cast Target to ACEnemyCharacterInstance. Calling TakeDamage."));
-			EnemyTarget->TakeDamage(MeleeDamage, FDamageEvent(), Attacker->GetController(), Attacker);
+			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Calling ReceiveDamageDirect on Enemy."));
+			EnemyTarget->ReceiveDamageDirect(MeleeDamage);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Cast failed! Fallback to UGameplayStatics::ApplyDamage."));
+			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Fallback to ApplyDamage."));
 			UGameplayStatics::ApplyDamage(Target, MeleeDamage, Attacker->GetController(), Attacker, UDamageType::StaticClass());
 		}
 	}
-
-    // Also call ApplyDamage as a universal fallback so any blueprint/actor receives event
-    UGameplayStatics::ApplyDamage(Target, MeleeDamage, Attacker->GetController(), Attacker, UDamageType::StaticClass());
 
 	return true;
 }

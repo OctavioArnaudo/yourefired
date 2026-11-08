@@ -54,11 +54,14 @@ void ACEnemyCharacterInstance::SetupPlayerInputComponent(UInputComponent* Player
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-float ACEnemyCharacterInstance::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ACEnemyCharacterInstance::ReceiveDamageDirect(float Amount)
 {
+	UE_LOG(LogTemp, Warning, TEXT("[ACEnemyCharacterInstance] RECEIVE DAMAGE DIRECT! Enemy=%s, Amount=%.2f"),
+		*GetName(), Amount);
+
 	if (IsDead()) return 0.0f;
 
-	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	float ActualDamage = (Amount > 0.0f) ? Amount : 25.0f;
 	HealthController.ReceiveDamage(EnemyModel.Health, ActualDamage);
 	UE_LOG(LogTemp, Warning, TEXT("[ACEnemyCharacterInstance] Enemy %s took %.2f damage! Current HP: %.2f / %.2f"),
 		*GetName(), ActualDamage, GetHealth(), GetMaxHealth());
@@ -72,6 +75,11 @@ float ACEnemyCharacterInstance::TakeDamage(float DamageAmount, FDamageEvent cons
 	}
 
 	return ActualDamage;
+}
+
+float ACEnemyCharacterInstance::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	return ReceiveDamageDirect(DamageAmount);
 }
 
 float ACEnemyCharacterInstance::GetHealth() const

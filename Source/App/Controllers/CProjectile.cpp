@@ -73,8 +73,7 @@ void ACProjectile::Tick(float DeltaTime)
 			float Dist = FVector::Dist(CurrentLoc, Actor->GetActorLocation());
 			if (Dist <= 120.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact with '%s' (Class: %s) at dist %.1f!"),
-					*Actor->GetName(), *Actor->GetClass()->GetName(), Dist);
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact with '%s' at dist %.1f!"), *Actor->GetName(), Dist);
 				ProcessHit(Actor);
 				break;
 			}
@@ -102,23 +101,23 @@ void ACProjectile::ProcessHit(AActor* OtherActor)
 		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(OtherActor);
 		if (IsValid(PlayerTarget))
 		{
-			PlayerTarget->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
+			UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Calling ReceiveDamageDirect on Player."));
+			PlayerTarget->ReceiveDamageDirect(ProjectileDamage);
 		}
 		else
 		{
 			ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(OtherActor);
 			if (IsValid(EnemyTarget))
 			{
-				EnemyTarget->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Calling ReceiveDamageDirect on Enemy."));
+				EnemyTarget->ReceiveDamageDirect(ProjectileDamage);
 			}
 			else
 			{
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Fallback to ApplyDamage."));
 				UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
 			}
 		}
-
-		// Universal fallback
-		UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
 
 		Destroy();
 	}
