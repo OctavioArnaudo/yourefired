@@ -35,4 +35,11 @@ public:
 
 	UPROPERTY()
 	UMShoot* ShootModel;
+
+	float GetHealth() const { return Health.GetHealth(); }
+	float GetMaxHealth() const { return Health.GetMaxHealth(); }
+	float GetHealthPercent() const { return Health.GetHealthPercent(); }
+	bool IsDead() const { return Health.IsDead(); }
+	float TakeDamage(float Amount) { return Health.TakeDamage(Amount); }
+	float Heal(float Amount) { return Health.Heal(Amount); }
 };
