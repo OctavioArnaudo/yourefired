@@ -2,11 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "SDamage.h"
 #include "SMelee.generated.h"
 
 class ACharacter;
 class AActor;
-class AController;
 
 UCLASS(BlueprintType, Blueprintable)
 class APP_API USMelee : public UObject
@@ -33,6 +33,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Services")
 	bool PerformMeleeAttackOnTarget(ACharacter* Attacker, AActor* Target);
-
-	static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser);
 };

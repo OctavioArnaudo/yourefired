@@ -3,6 +3,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 #include "Engine/DamageEvents.h"
+#include "App/Services/SDamage.h"
 #include "App/Controllers/CPlayerCharacterInstance.h"
 #include "App/Controllers/CEnemyCharacterInstance.h"
 
@@ -15,33 +16,6 @@ bool USMelee::ProcessSMelee(const FVector& TargetLocation)
 {
 	UE_LOG(LogTemp, Log, TEXT("[USMelee] Processing Services operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
 	return bIsActive;
-}
-
-void USMelee::ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (!IsValid(Target)) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Applying %.2f damage to target '%s' (Class: %s)"),
-		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
-
-	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
-	if (IsValid(PlayerTarget))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Direct cast to ACPlayerCharacterInstance succeeded. Calling ReceiveDamageDirect."));
-		PlayerTarget->ReceiveDamageDirect(DamageAmount);
-		return;
-	}
-
-	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
-	if (IsValid(EnemyTarget))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Direct cast to ACEnemyCharacterInstance succeeded. Calling ReceiveDamageDirect."));
-		EnemyTarget->ReceiveDamageDirect(DamageAmount);
-		return;
-	}
-
-	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
-	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Invoked ApplyDamage fallback on '%s'."), *Target->GetName());
 }
 
 bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
@@ -93,6 +67,6 @@ bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 bool USMelee::PerformMeleeAttackOnTarget(ACharacter* Attacker, AActor* Target)
 {
 	if (!IsValid(Attacker) || !IsValid(Target)) return false;
-	ApplyDamageUniversal(Target, MeleeDamage, Attacker->GetController(), Attacker);
+	USDamage::ApplyDamageUniversal(Target, MeleeDamage, Attacker->GetController(), Attacker);
 	return true;
 }

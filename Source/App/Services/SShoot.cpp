@@ -5,7 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DamageEvents.h"
-#include "App/Services/SMelee.h"
+#include "App/Services/SDamage.h"
 #include "App/Controllers/CPlayerCharacterInstance.h"
 #include "App/Controllers/CEnemyCharacterInstance.h"
 
@@ -82,7 +82,7 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 		if (HitActor != Shooter)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USShoot] Ranged sweep hit target '%s'! Applying damage."), *HitActor->GetName());
-			USMelee::ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
+			USDamage::ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
 		}
 	}
 
@@ -158,9 +158,10 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 		if (HitActor != Shooter)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USShoot] Discrete ranged sweep hit target '%s'! Applying damage."), *HitActor->GetName());
-			USMelee::ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
+			USDamage::ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
 		}
 	}
 
+	(void)ProjectileClass;
 	return true;
 }
