@@ -6,6 +6,7 @@
 
 class ACharacter;
 class AActor;
+class AController;
 
 UCLASS(BlueprintType, Blueprintable)
 class APP_API USMelee : public UObject
@@ -32,4 +33,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Services")
 	bool PerformMeleeAttackOnTarget(ACharacter* Attacker, AActor* Target);
+
+	static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser);
 };

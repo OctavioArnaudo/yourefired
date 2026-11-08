@@ -3,9 +3,27 @@
 #include "Engine/World.h"
 
 SPlayerCharacterInstance::SPlayerCharacterInstance()
+	: MeleeService(nullptr)
+	, ShootService(nullptr)
 {
-	ShootService = NewObject<USShoot>();
-	MeleeService = NewObject<USMelee>();
+}
+
+USMelee* SPlayerCharacterInstance::GetMeleeService()
+{
+	if (!MeleeService)
+	{
+		MeleeService = NewObject<USMelee>();
+	}
+	return MeleeService;
+}
+
+USShoot* SPlayerCharacterInstance::GetShootService()
+{
+	if (!ShootService)
+	{
+		ShootService = NewObject<USShoot>();
+	}
+	return ShootService;
 }
 
 void SPlayerCharacterInstance::HandleMovement(ACharacter* Character, float Value, bool bForward)
@@ -25,26 +43,18 @@ void SPlayerCharacterInstance::RotateTowardsCursor(ACharacter* Character)
 
 void SPlayerCharacterInstance::PerformMeleeAttack(ACharacter* Character)
 {
-	if (!MeleeService)
+	USMelee* Melee = GetMeleeService();
+	if (Melee && Character)
 	{
-		MeleeService = NewObject<USMelee>();
-	}
-
-	if (MeleeService && Character)
-	{
-		MeleeService->PerformMeleeAttack(Character);
+		Melee->PerformMeleeAttack(Character);
 	}
 }
 
 void SPlayerCharacterInstance::PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime)
 {
-	if (!ShootService)
+	USShoot* Shoot = GetShootService();
+	if (Shoot && Model.GetShootModel())
 	{
-		ShootService = NewObject<USShoot>();
-	}
-
-	if (ShootService && Model.GetShootModel())
-	{
-		ShootService->PerformDiscreteRangedShoot(Character, Model.GetShootModel(), Model.ProjectileClass, CurrentTime);
+		Shoot->PerformDiscreteRangedShoot(Character, Model.GetShootModel(), Model.ProjectileClass, CurrentTime);
 	}
 }

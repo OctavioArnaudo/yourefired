@@ -27,6 +27,9 @@ public:
 	void PerformMeleeAttack(ACharacter* Character);
 	void PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime);
 
+	USMelee* GetMeleeService();
+	USShoot* GetShootService();
+
 	SMovement Movement;
 	SHealth Health;
 	SSprint Sprint;

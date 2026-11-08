@@ -17,32 +17,17 @@ bool USMelee::ProcessSMelee(const FVector& TargetLocation)
 	return bIsActive;
 }
 
-static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
+void USMelee::ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (!IsValid(Target)) return;
 
 	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Applying %.2f damage to target '%s' (Class: %s)"),
 		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
 
-	// 1. Try reflection-based call to ReceiveDamageDirect (works on any C++ or Blueprint class with ReceiveDamageDirect)
-	UFunction* Func = Target->FindFunction(FName("ReceiveDamageDirect"));
-	if (Func)
-	{
-		struct FParams {
-			float Amount;
-		};
-		FParams Parms;
-		Parms.Amount = DamageAmount;
-
-		Target->ProcessEvent(Func, &Parms);
-		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Successfully invoked ReceiveDamageDirect via reflection on '%s'."), *Target->GetName());
-		return;
-	}
-
-	// 2. Direct C++ cast fallbacks
 	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
 	if (IsValid(PlayerTarget))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Direct cast to ACPlayerCharacterInstance succeeded. Calling ReceiveDamageDirect."));
 		PlayerTarget->ReceiveDamageDirect(DamageAmount);
 		return;
 	}
@@ -50,11 +35,11 @@ static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController
 	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
 	if (IsValid(EnemyTarget))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Direct cast to ACEnemyCharacterInstance succeeded. Calling ReceiveDamageDirect."));
 		EnemyTarget->ReceiveDamageDirect(DamageAmount);
 		return;
 	}
 
-	// 3. GameplayStatics fallback
 	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
 	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Invoked ApplyDamage fallback on '%s'."), *Target->GetName());
 }

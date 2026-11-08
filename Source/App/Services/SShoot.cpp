@@ -5,6 +5,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DamageEvents.h"
+#include "App/Services/SMelee.h"
 #include "App/Controllers/CPlayerCharacterInstance.h"
 #include "App/Controllers/CEnemyCharacterInstance.h"
 
@@ -17,40 +18,6 @@ bool USShoot::ProcessSShoot(const FVector& TargetLocation)
 {
 	UE_LOG(LogTemp, Log, TEXT("[USShoot] Processing Services operation for '%s' at %s."), *IdentifierName, *TargetLocation.ToString());
 	return bIsActive;
-}
-
-static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (!IsValid(Target)) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Shoot applying %.2f damage to target '%s' (Class: %s)"),
-		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
-
-	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
-	if (IsValid(PlayerTarget))
-	{
-		PlayerTarget->ReceiveDamageDirect(DamageAmount);
-		return;
-	}
-
-	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
-	if (IsValid(EnemyTarget))
-	{
-		EnemyTarget->ReceiveDamageDirect(DamageAmount);
-		return;
-	}
-
-	UFunction* Func = Target->FindFunction(FName("ReceiveDamageDirect"));
-	if (Func)
-	{
-		struct FParams { float Amount; };
-		FParams Parms;
-		Parms.Amount = DamageAmount;
-		Target->ProcessEvent(Func, &Parms);
-		return;
-	}
-
-	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
 }
 
 bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> ProjectileClass)
@@ -115,7 +82,7 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 		if (HitActor != Shooter)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USShoot] Ranged sweep hit target '%s'! Applying damage."), *HitActor->GetName());
-			ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
+			USMelee::ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
 		}
 	}
 
@@ -180,7 +147,7 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 		StartLoc,
 		EndLoc,
 		FQuat::Identity,
-	   ECC_Pawn,
+		ECC_Pawn,
 		FCollisionShape::MakeSphere(80.0f),
 		QueryParams
 	);
@@ -191,7 +158,7 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 		if (HitActor != Shooter)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USShoot] Discrete ranged sweep hit target '%s'! Applying damage."), *HitActor->GetName());
-			ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
+			USMelee::ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
 		}
 	}
 

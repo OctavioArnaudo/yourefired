@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Engine/World.h"
 #include "Engine/DamageEvents.h"
+#include "App/Services/SMelee.h"
 #include "App/Controllers/CPlayerCharacterInstance.h"
 #include "App/Controllers/CEnemyCharacterInstance.h"
 
@@ -80,53 +81,12 @@ void ACProjectile::Tick(float DeltaTime)
 
 void ACProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	ProcessHit(OtherActor);
+    ProcessHit(OtherActor);
 }
 
 void ACProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ProcessHit(OtherActor);
-}
-
-static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (!IsValid(Target)) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Applying %.2f damage to target '%s' (Class: %s)"),
-		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
-
-	// 1. Try reflection-based call to ReceiveDamageDirect
-	UFunction* Func = Target->FindFunction(FName("ReceiveDamageDirect"));
-	if (Func)
-	{
-		struct FParams {
-			float Amount;
-		};
-		FParams Parms;
-		Parms.Amount = DamageAmount;
-
-		Target->ProcessEvent(Func, &Parms);
-		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Successfully invoked ReceiveDamageDirect via reflection on '%s'."), *Target->GetName());
-		return;
-	}
-
-	// 2. Direct C++ cast fallbacks
-	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
-	if (IsValid(PlayerTarget))
-	{
-		PlayerTarget->ReceiveDamageDirect(DamageAmount);
-		return;
-	}
-
-	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
-	if (IsValid(EnemyTarget))
-	{
-		EnemyTarget->ReceiveDamageDirect(DamageAmount);
-		return;
-	}
-
-	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
-	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Invoked ApplyDamage fallback on '%s'."), *Target->GetName());
 }
 
 void ACProjectile::ProcessHit(AActor* OtherActor)
@@ -136,7 +96,7 @@ void ACProjectile::ProcessHit(AActor* OtherActor)
 		UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROJECTILE HIT '%s' (Class: %s)! Applying %.2f damage."),
 			*OtherActor->GetName(), *OtherActor->GetClass()->GetName(), ProjectileDamage);
 
-		ApplyDamageUniversal(OtherActor, ProjectileDamage, GetInstigatorController(), this);
+		USMelee::ApplyDamageUniversal(OtherActor, ProjectileDamage, GetInstigatorController(), this);
 		Destroy();
 	}
 }
