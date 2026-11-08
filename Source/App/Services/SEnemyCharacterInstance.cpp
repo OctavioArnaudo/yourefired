@@ -9,14 +9,21 @@
 #include "App/Services/SMelee.h"
 #include "App/Services/SShoot.h"
 
-SEnemyCharacterInstance::SEnemyCharacterInstance() {}
-
-void SEnemyCharacterInstance::UpdateAIBehavior(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
+USEnemyCharacterInstance::USEnemyCharacterInstance()
+	: PatrolService(nullptr)
+	, MeleeService(nullptr)
+	, ShootService(nullptr)
+	, LastFireTime(0.0f)
+	, FireRate(1.5f)
 {
-	if (!EnemyCharacter) return;
+}
+
+void USEnemyCharacterInstance::UpdateAIBehavior(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
+{
+	if (!IsValid(EnemyCharacter)) return;
 
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(EnemyCharacter, 0);
-	if (!PlayerPawn) return;
+	if (!IsValid(PlayerPawn)) return;
 
 	float DistanceToPlayer = FVector::Dist(EnemyCharacter->GetActorLocation(), PlayerPawn->GetActorLocation());
 
@@ -32,21 +39,24 @@ void SEnemyCharacterInstance::UpdateAIBehavior(ACharacter* EnemyCharacter, MEnem
 	}
 }
 
-void SEnemyCharacterInstance::ExecutePatrol(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
+void USEnemyCharacterInstance::ExecutePatrol(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
 {
-	UE_LOG(LogTemp, Verbose, TEXT("[SEnemyCharacterInstance] Delegating patrol execution to SPatrol unit service..."));
-	USPatrol* PatrolService = NewObject<USPatrol>();
-	if (PatrolService)
+	if (!PatrolService)
+	{
+		PatrolService = NewObject<USPatrol>(this);
+	}
+
+	if (IsValid(PatrolService))
 	{
 		PatrolService->ExecutePatrolStep(EnemyCharacter, Model.PatrolHomeLocation, Model.PatrolRadius);
 	}
 }
 
-void SEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
+void USEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, MEnemyCharacterInstance& Model)
 {
-	if (!EnemyCharacter || !EnemyCharacter->GetWorld()) return;
+	if (!IsValid(EnemyCharacter) || !EnemyCharacter->GetWorld()) return;
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(EnemyCharacter, 0);
-	if (!PlayerPawn) return;
+	if (!IsValid(PlayerPawn)) return;
 
 	FVector PlayerLocation = PlayerPawn->GetActorLocation();
 	float DistanceToPlayer = FVector::Dist(EnemyCharacter->GetActorLocation(), PlayerLocation);
@@ -59,8 +69,11 @@ void SEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, 
 	if (DistanceToPlayer <= Model.MeleeAttackRange)
 	{
 		PerformMeleeAttack();
-		USMelee* MeleeService = NewObject<USMelee>();
-		if (MeleeService)
+		if (!MeleeService)
+		{
+			MeleeService = NewObject<USMelee>(this);
+		}
+		if (IsValid(MeleeService))
 		{
 			MeleeService->PerformMeleeAttack(EnemyCharacter);
 		}
@@ -71,20 +84,32 @@ void SEnemyCharacterInstance::ExecuteChaseAndAttack(ACharacter* EnemyCharacter, 
 	}
 }
 
-void SEnemyCharacterInstance::PerformMeleeAttack()
+void USEnemyCharacterInstance::PerformMeleeAttack()
 {
 	UE_LOG(LogTemp, Log, TEXT("[SEnemyCharacterInstance] Enemy MELEE attack executed!"));
 }
 
-void SEnemyCharacterInstance::PerformRangedAttack(ACharacter* EnemyCharacter, const MEnemyCharacterInstance& Model)
+void USEnemyCharacterInstance::PerformRangedAttack(ACharacter* EnemyCharacter, const MEnemyCharacterInstance& Model)
 {
-	if (!EnemyCharacter || !EnemyCharacter->GetWorld()) return;
+	if (!IsValid(EnemyCharacter) || !EnemyCharacter->GetWorld()) return;
 
-	USShoot* ShootService = NewObject<USShoot>();
-	if (ShootService && Model.ShootModel)
+	float CurrentTime = EnemyCharacter->GetWorld()->GetTimeSeconds();
+	if ((CurrentTime - LastFireTime) < FireRate)
 	{
-		// Use discrete rate-limited shoot service so enemy fires discrete 1-by-1 shots instead of continuous stream
-		float CurrentTime = EnemyCharacter->GetWorld()->GetTimeSeconds();
-		ShootService->PerformDiscreteRangedShoot(EnemyCharacter, Model.ShootModel, Model.EnemyProjectileClass, CurrentTime);
+		return;
+	}
+
+	LastFireTime = CurrentTime;
+
+	if (!ShootService)
+	{
+		ShootService = NewObject<USShoot>(this);
+	}
+
+	if (IsValid(ShootService))
+	{
+		TSubclassOf<AActor> ProjClass = Model.EnemyProjectileClass;
+		ShootService->PerformRangedShoot(EnemyCharacter, ProjClass);
+		UE_LOG(LogTemp, Log, TEXT("[SEnemyCharacterInstance] Enemy fired discrete projectile at t=%.2fs"), CurrentTime);
 	}
 }

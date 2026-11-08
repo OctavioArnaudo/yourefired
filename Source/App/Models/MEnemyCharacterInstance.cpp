@@ -7,11 +7,12 @@ MEnemyCharacterInstance::MEnemyCharacterInstance()
 	, EnemyProjectileClass(nullptr)
 	, PatrolHomeLocation(FVector::ZeroVector)
 	, bIsChasingPlayer(false)
+	, Health(80.0f)
 	, ShootModel(nullptr)
 {
 	ShootModel = NewObject<UMShoot>();
 	if (ShootModel)
 	{
-		ShootModel->FireRate = 0.5f; // Discrete enemy fire rate (1 shot every 0.5 seconds)
+		ShootModel->FireRate = 1.5f; // Balanced enemy fire rate: 1 shot every 1.5 seconds (not too frequent)
 	}
 }

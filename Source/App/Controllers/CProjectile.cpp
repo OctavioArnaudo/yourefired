@@ -2,26 +2,38 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
+#include "App/Controllers/CPlayerCharacterInstance.h"
+#include "App/Controllers/CEnemyCharacterInstance.h"
+#include "Engine/World.h"
+#include "Engine/DamageEvents.h"
 
 ACProjectile::ACProjectile()
+	: ProjectileDamage(25.0f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMesh"));
 	RootComponent = ProjectileMesh;
-	ProjectileMesh->SetCollisionProfileName(TEXT("NoCollision"));
+
+	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	ProjectileMesh->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	ProjectileMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	ProjectileMesh->SetNotifyRigidBodyCollision(true);
+	ProjectileMesh->SetGenerateOverlapEvents(true);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshAsset(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	if (SphereMeshAsset.Succeeded())
 	{
 		ProjectileMesh->SetStaticMesh(SphereMeshAsset.Object);
-		ProjectileMesh->SetRelativeScale3D(FVector(0.4f, 0.4f, 0.4f));
+		ProjectileMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	}
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->UpdatedComponent = ProjectileMesh;
-	ProjectileMovement->InitialSpeed = 2000.0f;
-	ProjectileMovement->MaxSpeed = 2000.0f;
+	ProjectileMovement->InitialSpeed = 2500.0f;
+	ProjectileMovement->MaxSpeed = 2500.0f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
@@ -32,9 +44,77 @@ ACProjectile::ACProjectile()
 void ACProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+	if (ProjectileMovement)
+	{
+		ProjectileMovement->Velocity = GetActorForwardVector() * ProjectileMovement->InitialSpeed;
+	}
+
+	if (ProjectileMesh)
+	{
+		ProjectileMesh->OnComponentHit.AddDynamic(this, &ACProjectile::OnProjectileHit);
+		ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &ACProjectile::OnProjectileOverlap);
+	}
 }
 
 void ACProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!GetWorld()) return;
+	FVector CurrentLoc = GetActorLocation();
+
+	TArray<AActor*> FoundCharacters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), FoundCharacters);
+
+	for (AActor* Actor : FoundCharacters)
+	{
+		if (Actor && Actor != this && Actor != GetOwner())
+		{
+			float Dist = FVector::Dist(CurrentLoc, Actor->GetActorLocation());
+			if (Dist <= 120.0f)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact detected with '%s' at distance %.1f!"), *Actor->GetName(), Dist);
+				ProcessHit(Actor);
+				break;
+			}
+		}
+	}
+}
+
+void ACProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	ProcessHit(OtherActor);
+}
+
+void ACProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ProcessHit(OtherActor);
+}
+
+void ACProjectile::ProcessHit(AActor* OtherActor)
+{
+	if (OtherActor && OtherActor != this && OtherActor != GetOwner())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROJECTILE HIT '%s'! Applying direct %.2f damage."), *OtherActor->GetName(), ProjectileDamage);
+
+		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(OtherActor);
+		if (PlayerTarget)
+		{
+			PlayerTarget->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
+		}
+		else
+		{
+			ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(OtherActor);
+			if (EnemyTarget)
+			{
+				EnemyTarget->TakeDamage(ProjectileDamage, FDamageEvent(), GetInstigatorController(), this);
+			}
+			else
+			{
+				UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
+			}
+		}
+
+		Destroy();
+	}
 }

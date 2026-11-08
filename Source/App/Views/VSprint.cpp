@@ -1,4 +1,3 @@
-#include "VSprint.cpp"
 #include "VSprint.h"
 
 VSprint::VSprint()

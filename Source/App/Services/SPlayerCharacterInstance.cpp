@@ -5,6 +5,7 @@
 SPlayerCharacterInstance::SPlayerCharacterInstance()
 {
 	ShootService = NewObject<USShoot>();
+	MeleeService = NewObject<USMelee>();
 }
 
 void SPlayerCharacterInstance::HandleMovement(ACharacter* Character, float Value, bool bForward)
@@ -22,9 +23,17 @@ void SPlayerCharacterInstance::RotateTowardsCursor(ACharacter* Character)
 	Cursor.OrientTowardsCursor(Character);
 }
 
-void SPlayerCharacterInstance::PerformMeleeAttack()
+void SPlayerCharacterInstance::PerformMeleeAttack(ACharacter* Character)
 {
-	Range.ExecuteMeleeCheck();
+	if (!MeleeService)
+	{
+		MeleeService = NewObject<USMelee>();
+	}
+
+	if (MeleeService && Character)
+	{
+		MeleeService->PerformMeleeAttack(Character);
+	}
 }
 
 void SPlayerCharacterInstance::PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime)

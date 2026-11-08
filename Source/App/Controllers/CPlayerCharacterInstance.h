@@ -18,7 +18,7 @@
 #include "CPlayerCharacterInstance.generated.h"
 
 class UCameraComponent;
-class USSpringArmComponent;
+class USpringArmComponent;
 class UStaticMeshComponent;
 
 UCLASS()
@@ -35,6 +35,25 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetMaxHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetHealthPercent() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	bool IsDead() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float Heal(float HealAmount);
+
+	void FireBullet();
 
 private:
 	MPlayerCharacterInstance PlayerModel;
@@ -57,12 +76,12 @@ private:
 	UStaticMeshComponent* VerticalRectangleMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
-	USSpringArmComponent* CameraBoom;
+	USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* TopDownCameraComponent;
 
-	bool bIsRangedAttacking;
+	FTimerHandle FiringTimerHandle;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

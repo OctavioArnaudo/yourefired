@@ -5,6 +5,7 @@
 #include "SMelee.generated.h"
 
 class ACharacter;
+class AActor;
 
 UCLASS(BlueprintType, Blueprintable)
 class APP_API USMelee : public UObject
@@ -20,9 +21,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Services")
 	bool bIsActive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float MeleeDamage;
+
 	UFUNCTION(BlueprintCallable, Category = "Services")
 	bool ProcessSMelee(const FVector& TargetLocation);
 
 	UFUNCTION(BlueprintCallable, Category = "Services")
 	bool PerformMeleeAttack(ACharacter* Attacker);
+
+	UFUNCTION(BlueprintCallable, Category = "Services")
+	bool PerformMeleeAttackOnTarget(ACharacter* Attacker, AActor* Target);
 };

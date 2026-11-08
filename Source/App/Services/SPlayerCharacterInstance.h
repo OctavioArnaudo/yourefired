@@ -6,6 +6,7 @@
 #include "SSprint.h"
 #include "SWalk.h"
 #include "SRange.h"
+#include "SMelee.h"
 #include "SProjectile.h"
 #include "SSpawn.h"
 #include "SCamera.h"
@@ -23,7 +24,7 @@ public:
 	void HandleMovement(ACharacter* Character, float Value, bool bForward);
 	void HandleSprint(ACharacter* Character, MPlayerCharacterInstance& Model, bool bStart);
 	void RotateTowardsCursor(ACharacter* Character);
-	void PerformMeleeAttack();
+	void PerformMeleeAttack(ACharacter* Character);
 	void PerformRangedAttack(ACharacter* Character, MPlayerCharacterInstance& Model, float CurrentTime);
 
 	SMovement Movement;
@@ -31,6 +32,7 @@ public:
 	SSprint Sprint;
 	SWalk Walk;
 	SRange Range;
+	USMelee* MeleeService;
 	SProjectile Projectile;
 	SSpawn Spawn;
 	SCamera Camera;
