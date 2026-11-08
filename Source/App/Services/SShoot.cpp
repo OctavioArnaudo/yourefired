@@ -4,6 +4,7 @@
 #include "App/Controllers/CProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/DamageEvents.h"
 #include "App/Controllers/CPlayerCharacterInstance.h"
 #include "App/Controllers/CEnemyCharacterInstance.h"
 
@@ -18,13 +19,47 @@ bool USShoot::ProcessSShoot(const FVector& TargetLocation)
 	return bIsActive;
 }
 
+static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!IsValid(Target)) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Shoot applying %.2f damage to target '%s' (Class: %s)"),
+		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
+
+	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
+	if (IsValid(PlayerTarget))
+	{
+		PlayerTarget->ReceiveDamageDirect(DamageAmount);
+		return;
+	}
+
+	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
+	if (IsValid(EnemyTarget))
+	{
+		EnemyTarget->ReceiveDamageDirect(DamageAmount);
+		return;
+	}
+
+	UFunction* Func = Target->FindFunction(FName("ReceiveDamageDirect"));
+	if (Func)
+	{
+		struct FParams { float Amount; };
+		FParams Parms;
+		Parms.Amount = DamageAmount;
+		Target->ProcessEvent(Func, &Parms);
+		return;
+	}
+
+	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
+}
+
 bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> ProjectileClass)
 {
 	if (!IsValid(Shooter) || !IsValid(Shooter->GetWorld())) return false;
 
 	UWorld* World = Shooter->GetWorld();
 
-	// 1. Spawn visual projectile for graphics/animation feedback
+	// 1. Spawn visual projectile for feedback
 	TSubclassOf<AActor> ClassToSpawn = ProjectileClass;
 	if (!ClassToSpawn)
 	{
@@ -56,43 +91,31 @@ bool USShoot::PerformRangedShoot(ACharacter* Shooter, TSubclassOf<AActor> Projec
 		}
 	}
 
-	// 2. Instant trace-based damage application for 100% reliable combat hit
+	// 2. Instant Sphere Sweep for 100% reliable hit detection and damage
 	FVector StartLoc = Shooter->GetActorLocation() + (Shooter->GetActorForwardVector() * 50.0f);
-	FVector EndLoc = StartLoc + (Shooter->GetActorForwardVector() * 2000.0f);
+	FVector EndLoc = StartLoc + (Shooter->GetActorForwardVector() * 2500.0f);
 
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(Shooter);
 
-	bool bHit = World->LineTraceSingleByChannel(
+	bool bHit = World->SweepSingleByChannel(
 		HitResult,
 		StartLoc,
 		EndLoc,
+		FQuat::Identity,
 		ECC_Pawn,
+		FCollisionShape::MakeSphere(80.0f),
 		QueryParams
 	);
 
 	if (bHit && IsValid(HitResult.GetActor()))
 	{
 		AActor* HitActor = HitResult.GetActor();
-		UE_LOG(LogTemp, Warning, TEXT("[USShoot] Ranged visual+instant hit on '%s'! Applying damage."), *HitActor->GetName());
-
-		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(HitActor);
-		if (IsValid(PlayerTarget))
+		if (HitActor != Shooter)
 		{
-			PlayerTarget->ReceiveDamageDirect(25.0f);
-		}
-		else
-		{
-			ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(HitActor);
-			if (IsValid(EnemyTarget))
-			{
-				EnemyTarget->ReceiveDamageDirect(25.0f);
-			}
-			else
-			{
-				UGameplayStatics::ApplyDamage(HitActor, 25.0f, Shooter->GetController(), Shooter, UDamageType::StaticClass());
-			}
+			UE_LOG(LogTemp, Warning, TEXT("[USShoot] Ranged sweep hit target '%s'! Applying damage."), *HitActor->GetName());
+			ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
 		}
 	}
 
@@ -112,7 +135,7 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 
 	UWorld* World = Shooter->GetWorld();
 
-	// 1. Spawn visual projectile for graphics feedback
+	// 1. Spawn visual projectile
 	TSubclassOf<AActor> ClassToSpawn = ProjectileClass ? ProjectileClass : ShootModel->ProjectileClass;
 	if (!ClassToSpawn)
 	{
@@ -144,43 +167,31 @@ bool USShoot::PerformDiscreteRangedShoot(ACharacter* Shooter, UMShoot* ShootMode
 		}
 	}
 
-	// 2. Instant trace-based damage application for 100% reliable combat hit
+	// 2. Instant Sphere Sweep for 100% reliable hit detection and damage
 	FVector StartLoc = Shooter->GetActorLocation() + (Shooter->GetActorForwardVector() * 50.0f);
-	FVector EndLoc = StartLoc + (Shooter->GetActorForwardVector() * 2000.0f);
+	FVector EndLoc = StartLoc + (Shooter->GetActorForwardVector() * 2500.0f);
 
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(Shooter);
 
-	bool bHit = World->LineTraceSingleByChannel(
+	bool bHit = World->SweepSingleByChannel(
 		HitResult,
 		StartLoc,
 		EndLoc,
-		ECC_Pawn,
+		FQuat::Identity,
+	   ECC_Pawn,
+		FCollisionShape::MakeSphere(80.0f),
 		QueryParams
 	);
 
 	if (bHit && IsValid(HitResult.GetActor()))
 	{
 		AActor* HitActor = HitResult.GetActor();
-		UE_LOG(LogTemp, Warning, TEXT("[USShoot] Discrete ranged visual+instant hit on '%s'! Applying damage."), *HitActor->GetName());
-
-		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(HitActor);
-		if (IsValid(PlayerTarget))
+		if (HitActor != Shooter)
 		{
-			PlayerTarget->ReceiveDamageDirect(25.0f);
-		}
-		else
-		{
-			ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(HitActor);
-			if (IsValid(EnemyTarget))
-			{
-				EnemyTarget->ReceiveDamageDirect(25.0f);
-			}
-			else
-			{
-				UGameplayStatics::ApplyDamage(HitActor, 25.0f, Shooter->GetController(), Shooter, UDamageType::StaticClass());
-			}
+			UE_LOG(LogTemp, Warning, TEXT("[USShoot] Discrete ranged sweep hit target '%s'! Applying damage."), *HitActor->GetName());
+			ApplyDamageUniversal(HitActor, 25.0f, Shooter->GetController(), Shooter);
 		}
 	}
 

@@ -17,6 +17,48 @@ bool USMelee::ProcessSMelee(const FVector& TargetLocation)
 	return bIsActive;
 }
 
+static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!IsValid(Target)) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Applying %.2f damage to target '%s' (Class: %s)"),
+		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
+
+	// 1. Try reflection-based call to ReceiveDamageDirect (works on any C++ or Blueprint class with ReceiveDamageDirect)
+	UFunction* Func = Target->FindFunction(FName("ReceiveDamageDirect"));
+	if (Func)
+	{
+		struct FParams {
+			float Amount;
+		};
+		FParams Parms;
+		Parms.Amount = DamageAmount;
+
+		Target->ProcessEvent(Func, &Parms);
+		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Successfully invoked ReceiveDamageDirect via reflection on '%s'."), *Target->GetName());
+		return;
+	}
+
+	// 2. Direct C++ cast fallbacks
+	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
+	if (IsValid(PlayerTarget))
+	{
+		PlayerTarget->ReceiveDamageDirect(DamageAmount);
+		return;
+	}
+
+	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
+	if (IsValid(EnemyTarget))
+	{
+		EnemyTarget->ReceiveDamageDirect(DamageAmount);
+		return;
+	}
+
+	// 3. GameplayStatics fallback
+	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
+	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Invoked ApplyDamage fallback on '%s'."), *Target->GetName());
+}
+
 bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 {
 	if (!IsValid(Attacker) || !Attacker->GetWorld()) return false;
@@ -31,7 +73,7 @@ bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 	if (IsValid(PlayerPawn) && PlayerPawn != Attacker)
 	{
 		float Dist = FVector::Dist(AttackerLoc, PlayerPawn->GetActorLocation());
-		if (Dist <= 150.0f)
+		if (Dist <= 300.0f)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Enemy melee hit Player at dist %.1f!"), Dist);
 			PerformMeleeAttackOnTarget(Attacker, PlayerPawn);
@@ -39,18 +81,22 @@ bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 		}
 	}
 
-	// 2. If attacker is player, check distance to enemy characters safely
-	TArray<AActor*> EnemyActors;
-	UGameplayStatics::GetAllActorsOfClass(World, ACEnemyCharacterInstance::StaticClass(), EnemyActors);
-	for (AActor* Enemy : EnemyActors)
+	// 2. If attacker is player, check distance to all characters (enemies) safely
+	TArray<AActor*> AllCharacters;
+	UGameplayStatics::GetAllActorsOfClass(World, ACharacter::StaticClass(), AllCharacters);
+	UE_LOG(LogTemp, Warning, TEXT("[USMelee] Player performed melee attack. Scanning %d characters in world."), AllCharacters.Num());
+
+	for (AActor* Actor : AllCharacters)
 	{
-		if (IsValid(Enemy) && Enemy != Attacker)
+		if (IsValid(Actor) && Actor != Attacker && Actor != PlayerPawn)
 		{
-			float Dist = FVector::Dist(AttackerLoc, Enemy->GetActorLocation());
-			if (Dist <= 150.0f)
+			float Dist = FVector::Dist(AttackerLoc, Actor->GetActorLocation());
+			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Scanning character '%s' at dist %.1f"), *Actor->GetName(), Dist);
+
+			if (Dist <= 300.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[USMelee] Player melee hit Enemy '%s' at dist %.1f!"), *Enemy->GetName(), Dist);
-				PerformMeleeAttackOnTarget(Attacker, Enemy);
+				UE_LOG(LogTemp, Warning, TEXT("[USMelee] Player melee hit Target '%s' at dist %.1f!"), *Actor->GetName(), Dist);
+				PerformMeleeAttackOnTarget(Attacker, Actor);
 				break;
 			}
 		}
@@ -62,29 +108,6 @@ bool USMelee::PerformMeleeAttack(ACharacter* Attacker)
 bool USMelee::PerformMeleeAttackOnTarget(ACharacter* Attacker, AActor* Target)
 {
 	if (!IsValid(Attacker) || !IsValid(Target)) return false;
-	UE_LOG(LogTemp, Warning, TEXT("[USMelee] ATTACK ON TARGET: Attacker='%s', Target='%s' (Class: %s)"),
-		*Attacker->GetName(), *Target->GetName(), *Target->GetClass()->GetName());
-
-	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
-	if (IsValid(PlayerTarget))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("[USMelee] Calling ReceiveDamageDirect on Player."));
-		PlayerTarget->ReceiveDamageDirect(MeleeDamage);
-	}
-	else
-	{
-		ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
-		if (IsValid(EnemyTarget))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Calling ReceiveDamageDirect on Enemy."));
-			EnemyTarget->ReceiveDamageDirect(MeleeDamage);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[USMelee] Fallback to ApplyDamage."));
-			UGameplayStatics::ApplyDamage(Target, MeleeDamage, Attacker->GetController(), Attacker, UDamageType::StaticClass());
-		}
-	}
-
+	ApplyDamageUniversal(Target, MeleeDamage, Attacker->GetController(), Attacker);
 	return true;
 }

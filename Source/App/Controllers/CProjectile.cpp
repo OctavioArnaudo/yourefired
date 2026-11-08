@@ -4,10 +4,10 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
-#include "App/Controllers/CPlayerCharacterInstance.h"
-#include "App/Controllers/CEnemyCharacterInstance.h"
 #include "Engine/World.h"
 #include "Engine/DamageEvents.h"
+#include "App/Controllers/CPlayerCharacterInstance.h"
+#include "App/Controllers/CEnemyCharacterInstance.h"
 
 ACProjectile::ACProjectile()
 	: ProjectileDamage(25.0f)
@@ -51,14 +51,6 @@ void ACProjectile::BeginPlay()
 		ProjectileMovement->Velocity = GetActorForwardVector() * ProjectileMovement->InitialSpeed;
 		ProjectileMovement->Activate();
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Spawned at %s with velocity %s"), *GetActorLocation().ToString(), *ProjectileMovement->Velocity.ToString());
-
-	if (ProjectileMesh)
-	{
-		ProjectileMesh->OnComponentHit.AddDynamic(this, &ACProjectile::OnProjectileHit);
-		ProjectileMesh->OnComponentBeginOverlap.AddDynamic(this, &ACProjectile::OnProjectileOverlap);
-	}
 }
 
 void ACProjectile::Tick(float DeltaTime)
@@ -76,10 +68,9 @@ void ACProjectile::Tick(float DeltaTime)
 		if (IsValid(Actor) && Actor != this && Actor != ShooterActor && Actor != GetOwner())
 		{
 			float Dist = FVector::Dist(CurrentLoc, Actor->GetActorLocation());
-			// Increase threshold slightly to 150.0f for reliable hit registration
-			if (Dist <= 150.0f)
+			if (Dist <= 120.0f)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROXIMITY IMPACT! Hit '%s' at dist %.1f!"), *Actor->GetName(), Dist);
+				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Proximity impact with '%s' at dist %.1f!"), *Actor->GetName(), Dist);
 				ProcessHit(Actor);
 				break;
 			}
@@ -97,6 +88,47 @@ void ACProjectile::OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent,
 	ProcessHit(OtherActor);
 }
 
+static void ApplyDamageUniversal(AActor* Target, float DamageAmount, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!IsValid(Target)) return;
+
+	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Applying %.2f damage to target '%s' (Class: %s)"),
+		DamageAmount, *Target->GetName(), *Target->GetClass()->GetName());
+
+	// 1. Try reflection-based call to ReceiveDamageDirect
+	UFunction* Func = Target->FindFunction(FName("ReceiveDamageDirect"));
+	if (Func)
+	{
+		struct FParams {
+			float Amount;
+		};
+		FParams Parms;
+		Parms.Amount = DamageAmount;
+
+		Target->ProcessEvent(Func, &Parms);
+		UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Successfully invoked ReceiveDamageDirect via reflection on '%s'."), *Target->GetName());
+		return;
+	}
+
+	// 2. Direct C++ cast fallbacks
+	ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(Target);
+	if (IsValid(PlayerTarget))
+	{
+		PlayerTarget->ReceiveDamageDirect(DamageAmount);
+		return;
+	}
+
+	ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(Target);
+	if (IsValid(EnemyTarget))
+	{
+		EnemyTarget->ReceiveDamageDirect(DamageAmount);
+		return;
+	}
+
+	UGameplayStatics::ApplyDamage(Target, DamageAmount, EventInstigator, DamageCauser, UDamageType::StaticClass());
+	UE_LOG(LogTemp, Warning, TEXT("[UniversalDamage] Invoked ApplyDamage fallback on '%s'."), *Target->GetName());
+}
+
 void ACProjectile::ProcessHit(AActor* OtherActor)
 {
 	if (IsValid(OtherActor) && OtherActor != this && OtherActor != ShooterActor && OtherActor != GetOwner())
@@ -104,27 +136,7 @@ void ACProjectile::ProcessHit(AActor* OtherActor)
 		UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] PROJECTILE HIT '%s' (Class: %s)! Applying %.2f damage."),
 			*OtherActor->GetName(), *OtherActor->GetClass()->GetName(), ProjectileDamage);
 
-		ACPlayerCharacterInstance* PlayerTarget = Cast<ACPlayerCharacterInstance>(OtherActor);
-		if (IsValid(PlayerTarget))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Calling ReceiveDamageDirect on Player."));
-			PlayerTarget->ReceiveDamageDirect(ProjectileDamage);
-		}
-		else
-		{
-			ACEnemyCharacterInstance* EnemyTarget = Cast<ACEnemyCharacterInstance>(OtherActor);
-			if (IsValid(EnemyTarget))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Calling ReceiveDamageDirect on Enemy."));
-				EnemyTarget->ReceiveDamageDirect(ProjectileDamage);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("[ACProjectile] Fallback to ApplyDamage.Header"));
-				UGameplayStatics::ApplyDamage(OtherActor, ProjectileDamage, GetInstigatorController(), this, UDamageType::StaticClass());
-			}
-		}
-
+		ApplyDamageUniversal(OtherActor, ProjectileDamage, GetInstigatorController(), this);
 		Destroy();
 	}
 }
